@@ -5,6 +5,7 @@ import com.whh.findmuseapi.common.util.ApiResponse;
 import com.whh.findmuseapi.ios.dto.AppleLoginResponse;
 import com.whh.findmuseapi.ios.service.AppleService;
 import com.whh.findmuseapi.jwt.service.JwtService;
+import com.whh.findmuseapi.user.dto.response.UserInfoResponse;
 import com.whh.findmuseapi.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,8 +23,8 @@ public class AppleController {
 
     @Operation(summary = "로그인")
     @PostMapping("/token")
-    public ApiResponse<?> loginWithIdentityToken(HttpServletResponse response, @RequestBody AppleLoginResponse appleLoginResponse) {
-        User user = appleService.loginWithToken(appleLoginResponse);
+    public ApiResponse<UserInfoResponse> loginWithIdentityToken(HttpServletResponse response, @RequestBody AppleLoginResponse appleLoginResponse) {
+        UserInfoResponse user = appleService.loginWithToken(appleLoginResponse);
         appleService.loginSuccess(user, response);
         
         return ApiResponse.createSuccess(ResponseCode.SUCCESS, user);

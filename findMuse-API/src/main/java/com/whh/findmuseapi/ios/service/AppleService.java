@@ -14,6 +14,7 @@ import com.whh.findmuseapi.ios.dto.AppleLoginResponse;
 import com.whh.findmuseapi.ios.dto.AppleToken;
 import com.whh.findmuseapi.ios.feign.AppleAuthClient;
 import com.whh.findmuseapi.ios.util.AppleJwtUtils;
+import com.whh.findmuseapi.user.dto.response.UserInfoResponse;
 import com.whh.findmuseapi.user.entity.User;
 import com.whh.findmuseapi.user.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
@@ -59,7 +60,7 @@ public class AppleService {
     }
 
     @Transactional
-    public User login(AppleLoginResponse appleLoginResponse) {
+    public UserInfoResponse login(AppleLoginResponse appleLoginResponse) {
         try {
             ReadOnlyJWTClaimsSet jwtClaimsSet = getTokenClaims(appleLoginResponse.getIdToken());
             
@@ -75,7 +76,7 @@ public class AppleService {
             
             if (findUser == null) {
                 // 신규 회원가입의 경우 DB에 저장
-                return userRepository.save(
+                User newUser =  userRepository.save(
                     User.builder()
                         .accountId(accountId)
                         .email(email)
@@ -83,9 +84,11 @@ public class AppleService {
                         .refreshToken(jwtService.createRefreshToken())
                         .build()
                 );
+
+                return UserInfoResponse.toUserInfoResponse(newUser);
             }
             
-            return findUser;
+            return UserInfoResponse.toUserInfoResponse(findUser);
             
         } catch (JsonProcessingException e) {
             throw new CustomBadRequestException(appleLoginResponse.getIdToken());
@@ -163,15 +166,15 @@ public class AppleService {
         userRepository.delete(user);
     }
     
-    public User loginWithToken(AppleLoginResponse appleLoginResponse) {
+    public UserInfoResponse loginWithToken(AppleLoginResponse appleLoginResponse) {
         return login(appleLoginResponse);
     }
     
-    public void loginSuccess(User user, HttpServletResponse response) {
-        String accessToken = jwtService.createAccessToken(user.getEmail());
+    public void loginSuccess(UserInfoResponse user, HttpServletResponse response) {
+        String accessToken = jwtService.createAccessToken(user.email());
         String refreshToken = jwtService.createRefreshToken();
         
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-        jwtService.updateRefreshToken(user.getEmail(), refreshToken);
+        jwtService.updateRefreshToken(user.email(), refreshToken);
     }
 }
