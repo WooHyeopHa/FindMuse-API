@@ -46,7 +46,6 @@ public class ReviewServiceImpl implements ReviewService{
     public void createReview(ReviewRequest reviewRequest) {
         User findUser = userRepository.findById(reviewRequest.getUserId()).orElseThrow();
         Art findArt = artRepository.findById(reviewRequest.getArtId()).orElseThrow();
-        //TODO : 저장되는지 확인하기
         ArtReview artReview = new ArtReview(reviewRequest.getContent(), String.valueOf(reviewRequest.getStar()), findUser, findArt);
         artRepository.save(findArt);
         //TODO : 예외처리

@@ -35,6 +35,7 @@ public class ArtReview {
         this.star = star;
         this.createDate = LocalDate.now();
         this.likeCount = 0;
+        this.createDate = LocalDate.now();
         updateRelation(user, art);
     }
 
