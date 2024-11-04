@@ -17,18 +17,11 @@ public class AllReviewResponse {
     private List<SingleReviewResponse> reviewList;
 
 
-    public static AllReviewResponse toDto(List<ArtReview> reviews) {
+    public static AllReviewResponse toDto(float star, List<ArtReview> reviews) {
         return AllReviewResponse.builder()
                 .reviewCnt(reviews.size())
-                .totalStar(getTotalStar(reviews))
+                .totalStar(star)
                 .reviewList(SingleReviewResponse.toDto(reviews)).build();
-    }
-    private static float getTotalStar(List<ArtReview> review) {
-        float totalStar = 0;
-        for (ArtReview artReview : review) {
-            totalStar += Float.valueOf(artReview.getStar());
-        }
-        return totalStar / review.size();
     }
 
     @Builder

@@ -35,7 +35,7 @@ public class ReviewServiceImpl implements ReviewService{
     public AllReviewResponse getArtReview(Long artId) {
         Art findArt = artRepository.findById(artId).orElseThrow();
         List<ArtReview> artReviews = findArt.getArtReviews();
-        return AllReviewResponse.toDto(artReviews);
+        return AllReviewResponse.toDto(findArt.getStar(), artReviews);
     }
 
     /**
