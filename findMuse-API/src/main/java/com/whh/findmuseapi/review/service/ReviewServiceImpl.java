@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,9 +33,15 @@ public class ReviewServiceImpl implements ReviewService{
      * 모든 리뷰 조회
      */
     @Override
-    public AllReviewResponse getArtReview(Long artId) {
+    public AllReviewResponse getArtReview(Long artId, String creteria) {
         Art findArt = artRepository.findById(artId).orElseThrow();
-        List<ArtReview> artReviews = findArt.getArtReviews();
+        List<ArtReview> artReviews;
+        if(creteria.equals("like")) {
+            artReviews = reviewRepository.findAllByArtOrderByLikeCountDesc(findArt).orElse(new ArrayList<>());
+        }
+        else{
+            artReviews = reviewRepository.findAllByArtOrderByCreateDateDesc(findArt).orElse(new ArrayList<>());
+        }
         return AllReviewResponse.toDto(findArt.getStar(), artReviews);
     }
 

@@ -3,7 +3,7 @@ package com.whh.findmuseapi.review.service;
 import com.whh.findmuseapi.review.dto.*;
 
 public interface ReviewService {
-    AllReviewResponse getArtReview(Long artId);
+    AllReviewResponse getArtReview(Long artId, String creteria);
 
     void createReview(ReviewRequest reviewRequest);
 
