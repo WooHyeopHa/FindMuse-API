@@ -45,7 +45,7 @@ public class ReviewContoller {
     /**
      * 리뷰 삭제
      */
-    @DeleteMapping("/review/{userId}/{reivewId}")
+    @DeleteMapping("/review/{userId}/{reviewId}")
     public ApiResponse<?> deleteReview(@PathVariable Long userId, @PathVariable Long reviewId) {
         reviewService.deleteReview(userId, reviewId);
         return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
