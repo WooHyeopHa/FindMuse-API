@@ -90,4 +90,14 @@ public class Art {
         }
         return poster;
     }
+
+    public void plusViewAndCalStar(float star) {
+        //TODO : 동시성 고려?
+        this.star = ((this.star * this.viewCnt) + star) / (this.viewCnt+1);
+        this.viewCnt++;
+    }
+
+    public void updateStar(float oldStar, float newStar) {
+        this.star = ((this.star * this.viewCnt) - oldStar + newStar) / this.viewCnt;
+    }
 }
