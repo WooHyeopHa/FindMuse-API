@@ -3,9 +3,11 @@ package com.whh.findmuseapi.art.service;
 import com.whh.findmuseapi.art.dto.*;
 import com.whh.findmuseapi.art.entity.Art;
 import com.whh.findmuseapi.art.entity.ArtLike;
+import com.whh.findmuseapi.art.repository.ArtHistoryRepository;
 import com.whh.findmuseapi.art.repository.ArtLikeRepository;
 import com.whh.findmuseapi.art.repository.ArtRepository;
 import com.whh.findmuseapi.common.constant.Infos.ArtType;
+import com.whh.findmuseapi.review.repository.ReviewRepository;
 import com.whh.findmuseapi.user.entity.User;
 import com.whh.findmuseapi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +29,20 @@ public class ArtServiceImpl implements ArtService{
     private final ArtRepository artRepository;
     private final UserRepository userRepository;
     private final ArtLikeRepository artLikeRepository;
+    private final ArtHistoryRepository artHistoryRepository;
+    private final ReviewRepository reviewRepository;
 
     /**
      * 문화예술 개별 조회
      */
     @Override
-    public ArtOneResponse getArtInfoOne(Long artId) {
-        Art findArt = artRepository.findById(artId)
-                .orElseThrow();
-        return ArtOneResponse.toDto(findArt);
+    public ArtOneResponse getArtInfoOne(Long artId, Long userId) {
+        Art findArt = artRepository.findById(artId).orElseThrow();
+        User findUser = userRepository.findById(userId).orElseThrow();
+        return ArtOneResponse.toDto(findArt,
+                artLikeRepository.existsByUserAndArt(findUser, findArt),
+                artHistoryRepository.existsByUserAndArt(findUser, findArt),
+                reviewRepository.existsByUserAndArt(findUser, findArt));
     }
 
     /**
@@ -97,11 +104,10 @@ public class ArtServiceImpl implements ArtService{
     @Override
     @Transactional
     public void markLike(ArtLikeRequest artLikeRequest) {
-        //TODO : 이게 최선일까?
         User findUser = userRepository.findById(artLikeRequest.getUserId()).orElseThrow();
         Art findArt = artRepository.findById(artLikeRequest.getArtId()).orElseThrow();
 
-        ArtLike liked = artLikeRepository.findArtLikeByArtIdAndUserId(artLikeRequest.getArtId(), artLikeRequest.getUserId())
+        ArtLike liked = artLikeRepository.findArtLikeByArtAndUser(findArt, findUser)
                 .orElse(new ArtLike(findUser, findArt));
 
         liked.changeStatus();

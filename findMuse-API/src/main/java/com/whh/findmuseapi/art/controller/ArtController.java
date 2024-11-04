@@ -7,7 +7,6 @@ import com.whh.findmuseapi.art.dto.ArtOneResponse;
 import com.whh.findmuseapi.art.service.ArtService;
 import com.whh.findmuseapi.common.constant.ResponseCode;
 import com.whh.findmuseapi.common.util.ApiResponse;
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,9 +40,9 @@ public class ArtController {
     /**
      * 문화예술 개별 상세조회
      */
-    @GetMapping("/art/one/{artId}")
-    public ApiResponse<ArtOneResponse> getArtOne(@PathVariable(name = "artId") Long artId) {
-        ArtOneResponse response = artService.getArtInfoOne(artId);
+    @GetMapping("/art/one/{artId}/{userId}")
+    public ApiResponse<ArtOneResponse> getArtOne(@PathVariable Long artId, @PathVariable Long userId) {
+        ArtOneResponse response = artService.getArtInfoOne(artId, userId);
         return ApiResponse.createSuccess(ResponseCode.SUCCESS, response);
     }
 

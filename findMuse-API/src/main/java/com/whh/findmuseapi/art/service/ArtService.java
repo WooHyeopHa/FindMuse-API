@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ArtService {
 
-    ArtOneResponse getArtInfoOne(Long artId);
+    ArtOneResponse getArtInfoOne(Long artId, Long userId);
 
     ArtListResponse getArtByCondition(Long userId, String date, List<String> genre, String sort);
 
