@@ -46,7 +46,7 @@ public class ReviewServiceImpl implements ReviewService{
     public void createReview(ReviewRequest reviewRequest) {
         User findUser = userRepository.findById(reviewRequest.getUserId()).orElseThrow();
         Art findArt = artRepository.findById(reviewRequest.getArtId()).orElseThrow();
-        ArtReview artReview = new ArtReview(reviewRequest.getContent(), String.valueOf(reviewRequest.getStar()), findUser, findArt);
+        ArtReview artReview = new ArtReview(reviewRequest.getContent(), findUser, findArt);
         reviewRepository.save(artReview);
         //TODO : 예외처리
     }
@@ -129,6 +129,8 @@ public class ReviewServiceImpl implements ReviewService{
         else {
             findArt.plusViewAndCalStar(reviewStarRequest.getStar());
             artHistoryRepository.save(new ArtHistory(findUser, findArt, reviewStarRequest.getStar()));
+            ArtReview findReview = reviewRepository.findByUserAndArt(findUser, findArt);
+            findReview.updateStar(String.valueOf(reviewStarRequest.getStar()));
         }
     }
 }

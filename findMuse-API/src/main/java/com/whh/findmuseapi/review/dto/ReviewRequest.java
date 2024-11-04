@@ -9,5 +9,4 @@ public class ReviewRequest {
     private Long artId;
     private Long userId;
     private String content;
-    private float star;
 }

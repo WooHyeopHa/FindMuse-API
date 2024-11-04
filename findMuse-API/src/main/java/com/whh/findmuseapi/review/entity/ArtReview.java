@@ -30,9 +30,8 @@ public class ArtReview {
     @JoinColumn(name = "art_id")
     private Art art;
 
-    public ArtReview(String content, String star, User user, Art art) {
+    public ArtReview(String content, User user, Art art) {
         this.content = content;
-        this.star = star;
         this.createDate = LocalDate.now();
         this.likeCount = 0;
         this.createDate = LocalDate.now();
@@ -44,6 +43,10 @@ public class ArtReview {
         this.art = art;
         user.getArtReviews().add(this);
         art.getArtReviews().add(this);
+    }
+
+    public void updateStar(String star) {
+        this.star = star;
     }
 
     public void updateReview(String newContent) {

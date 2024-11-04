@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReviewRepository extends JpaRepository<ArtReview, Long> {
     boolean existsByUserAndArt(User user, Art art);
+    ArtReview findByUserAndArt(User user, Art art);
 }
