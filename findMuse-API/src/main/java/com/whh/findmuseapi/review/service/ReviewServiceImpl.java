@@ -88,7 +88,7 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     @Transactional
     public boolean likeReview(ReviewLikeRequest reviewLikeRequest) {
-        //TODO : 1. 이미 공감한 리뷰인지 / 2. 동시성 제어
+        //TODO : 1. 동시성 제어
         User findUser = userRepository.findById(reviewLikeRequest.getUserId()).orElseThrow();
         ArtReview artReview = reviewRepository.findById(reviewLikeRequest.getReviewId()).orElseThrow();
 
@@ -120,8 +120,8 @@ public class ReviewServiceImpl implements ReviewService{
     public void giveReviewStar(ReviewStarRequest reviewStarRequest) {
         User findUser = userRepository.findById(reviewStarRequest.getUserId()).orElseThrow();
         Art findArt = artRepository.findById(reviewStarRequest.getArtId()).orElseThrow();
-        //이미 관렴한 경우
-        if (reviewStarRequest.isViewed()) {
+        //이미 관람한 경우
+        if (reviewStarRequest.isStared()) {
             ArtHistory findHostory = artHistoryRepository.findByUserAndArt(findUser, findArt);
             findArt.updateStar(findHostory.getStar(), reviewStarRequest.getStar());
         }

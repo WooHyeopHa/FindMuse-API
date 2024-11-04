@@ -9,5 +9,5 @@ public class ReviewStarRequest {
     private Long artId;
     private Long userId;
     private float star;
-    private boolean isViewed; // 리뷰 작성 여부
+    private boolean isStared; // 리뷰 작성 여부
 }
