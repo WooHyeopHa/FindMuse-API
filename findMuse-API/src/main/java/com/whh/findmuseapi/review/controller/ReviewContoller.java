@@ -30,7 +30,7 @@ public class ReviewContoller {
     @PostMapping("/review")
     public ApiResponse<?> createReview(@RequestBody ReviewRequest reviewRequest) {
         reviewService.createReview(reviewRequest);
-        return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
+        return ApiResponse.createSuccessWithNoContent(ResponseCode.RESOURCE_CREATED);
     }
 
     /**
