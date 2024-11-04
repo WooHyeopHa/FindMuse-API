@@ -44,7 +44,7 @@ public class Art {
     @JoinColumn(name = "setlist_id")
     private SetList setList;
 
-    @OneToMany(mappedBy = "art", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "art", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<ArtReview> artReviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "art", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
