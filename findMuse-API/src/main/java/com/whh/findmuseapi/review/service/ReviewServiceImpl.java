@@ -22,11 +22,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ReviewServiceImpl implements ReviewService{
 
-    private ArtRepository artRepository;
-    private ArtHistoryRepository artHistoryRepository;
-    private UserRepository userRepository;
-    private ReviewRepository reviewRepository;
-    private ReviewLikeRepository reviewLikeRepository;
+    private final ArtRepository artRepository;
+    private final ArtHistoryRepository artHistoryRepository;
+    private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
 
     /**
      * 모든 리뷰 조회

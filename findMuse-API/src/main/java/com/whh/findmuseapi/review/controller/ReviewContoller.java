@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1")
 public class ReviewContoller {
 
-    private ReviewService reviewService;
+    private final ReviewService reviewService;
     /**
      * 문화예술 별 리뷰 종합
      */
