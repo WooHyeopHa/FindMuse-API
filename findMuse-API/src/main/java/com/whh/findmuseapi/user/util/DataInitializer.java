@@ -16,14 +16,15 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // 사용자 정보 생성
-        User user = User.builder()
-                .email("test@email.com")
-                .role(Infos.Role.USER)
-                .accountId("test_user")
-                .refreshToken("testRefreshToken")
-                .build();
+//        User user = User.builder()
+//                .email("eeehhhggg@gmail.com")
+//                .nickname("이혁규")
+//                .role(Infos.Role.USER)
+//                .accountId("test_user2")
+//                .refreshToken("testRefreshToken2")
+//                .build();
 
         // 사용자 저장
-        userRepository.save(user);
+//        userRepository.save(user);
     }
 }

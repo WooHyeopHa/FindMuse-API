@@ -2,7 +2,9 @@ package com.whh.findmuseapi.user.dto.response;
 
 import com.whh.findmuseapi.common.constant.Infos;
 import com.whh.findmuseapi.user.entity.User;
+import lombok.Builder;
 
+@Builder
 public record UserInfoResponse(
         Long id,
         String accountId,
@@ -19,27 +21,29 @@ public record UserInfoResponse(
         boolean alarmStatus,
         boolean activateStatus,
         Infos.LoginType loginType,
+        boolean isOnboardingFinished,
         String refreshToken
 ) {
     public static UserInfoResponse toUserInfoResponse(User user) {
-        return new UserInfoResponse(
-                user.getId(),
-                user.getAccountId(),
-                user.getEmail(),
-                user.getNickname(),
-                user.getBirthYear(),
-                user.getProfileImageUrl(),
-                user.getGender(),
-                user.getLocation(),
-                user.getComment(),
-                user.getArtCount(),
-                user.getFindMuseCount(),
-                user.isShowStatus(),
-                user.isAlarmStatus(),
-                user.isActivateStatus(),
-                user.getLoginType(),
-                user.getRefreshToken()
-        );
+        return UserInfoResponse.builder()
+                .id(user.getId())
+                .accountId(user.getAccountId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .birthYear(user.getBirthYear())
+                .profileImageUrl(user.getProfileImageUrl())
+                .gender(user.getGender())
+                .location(user.getLocation())
+                .comment(user.getComment())
+                .artCount(user.getArtCount())
+                .findMuseCount(user.getFindMuseCount())
+                .showStatus(user.isShowStatus())
+                .alarmStatus(user.isAlarmStatus())
+                .activateStatus(user.isActivateStatus())
+                .loginType(user.getLoginType())
+                .isOnboardingFinished(user.isOnboardingFinished())
+                .refreshToken(user.getRefreshToken())
+                .build();
     }
 }
 

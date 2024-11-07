@@ -43,6 +43,7 @@ public class User {
     private int artCount = 0; //참여한 전시 횟수
     private int findMuseCount = 0; // 뮤즈 찾기 횟수
     private boolean showStatus = false;
+    private boolean isOnboardingFinished = false; // 최초 로그인 시 온보딩 진행 여부
     private boolean alarmStatus;
     private boolean activateStatus;
     private LoginType loginType;
@@ -101,11 +102,12 @@ public class User {
     private List<UserTaste> tasteList = new ArrayList<>();
     
     @Builder
-    public User(String accountId, String email, Role role, String refreshToken) {
+    public User(String accountId, String email, Role role, String refreshToken, String nickname) {
         this.accountId = accountId;
         this.email = email;
         this.role = role;
         this.refreshToken = refreshToken;
+        this.nickname = nickname;
     }
 
     public void updateInformation(Integer birthYear, Gender gender) {
