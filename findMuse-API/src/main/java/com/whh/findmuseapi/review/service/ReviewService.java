@@ -3,17 +3,17 @@ package com.whh.findmuseapi.review.service;
 import com.whh.findmuseapi.review.dto.*;
 
 public interface ReviewService {
-    AllReviewResponse getArtReview(Long artId, String creteria);
+    AllReviewResponse getArtReview(long artId, String creteria);
 
     void createReview(ReviewRequest reviewRequest);
 
     boolean likeReview(ReviewLikeRequest reviewLikeRequest);
 
-    void likeReviewCancle(Long reviewId, Long userId);
+    void likeReviewCancle(long reviewId, long userId);
 
     void giveReviewStar(ReviewStarRequest reviewStarRequest);
 
     void updateReview(ReviewUpdateRequest reviewUpdateRequest);
 
-    void deleteReview(Long userId, Long reviewId);
+    void deleteReview(long userId, long reviewId);
 }

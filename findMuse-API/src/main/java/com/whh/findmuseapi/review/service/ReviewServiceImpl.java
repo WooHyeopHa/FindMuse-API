@@ -33,7 +33,7 @@ public class ReviewServiceImpl implements ReviewService{
      * 모든 리뷰 조회
      */
     @Override
-    public AllReviewResponse getArtReview(Long artId, String creteria) {
+    public AllReviewResponse getArtReview(long artId, String creteria) {
         Art findArt = artRepository.findById(artId).orElseThrow();
         List<ArtReview> artReviews;
         if(creteria.equals("like")) {
@@ -78,7 +78,7 @@ public class ReviewServiceImpl implements ReviewService{
      * 리뷰 삭제
      */
     @Override
-    public void deleteReview(Long userId, Long reviewId) {
+    public void deleteReview(long userId, long reviewId) {
         //TODO: 예외처리
         ArtReview findReview = reviewRepository.findById(reviewId).orElseThrow();
 
@@ -113,7 +113,7 @@ public class ReviewServiceImpl implements ReviewService{
      */
     @Override
     @Transactional
-    public void likeReviewCancle(Long reviewId, Long userId) {
+    public void likeReviewCancle(long reviewId, long userId) {
         User findUser = userRepository.findById(userId).orElseThrow();
         ArtReview artReview = reviewRepository.findById(reviewId).orElseThrow();
         reviewLikeRepository.deleteArtReviewLikeByUserAndArtReview(findUser, artReview);

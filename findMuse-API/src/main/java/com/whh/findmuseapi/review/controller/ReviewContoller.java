@@ -20,7 +20,7 @@ public class ReviewContoller {
      * 문화예술 별 리뷰 종합
      */
     @GetMapping("/review/{artId}")
-    public ApiResponse<?> getArtReview(@PathVariable Long artId, @RequestParam(required = false, defaultValue = "date", value = "sort") String creteria) {
+    public ApiResponse<?> getArtReview(@PathVariable long artId, @RequestParam(required = false, defaultValue = "date", value = "sort") String creteria) {
        return ApiResponse.createSuccess(ResponseCode.SUCCESS, reviewService.getArtReview(artId, creteria));
     }
 
@@ -46,7 +46,7 @@ public class ReviewContoller {
      * 리뷰 삭제
      */
     @DeleteMapping("/review/{userId}/{reviewId}")
-    public ApiResponse<?> deleteReview(@PathVariable Long userId, @PathVariable Long reviewId) {
+    public ApiResponse<?> deleteReview(@PathVariable long userId, @PathVariable long reviewId) {
         reviewService.deleteReview(userId, reviewId);
         return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
     }
@@ -63,8 +63,8 @@ public class ReviewContoller {
     /**
      * 리뷰 공감 취소하기
      */
-    @DeleteMapping("/review/like/{reviewId}/{userId}")
-    public ApiResponse<?> likeReviewCancle(@PathVariable Long reviewId, @PathVariable Long userId) {
+    @DeleteMapping("/review/like/{userId}/{reviewId}")
+    public ApiResponse<?> likeReviewCancle(@PathVariable long reviewId, @PathVariable long userId) {
         reviewService.likeReviewCancle(reviewId, userId);
         return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
     }
