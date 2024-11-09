@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -31,4 +29,37 @@ public class ArtReview {
     @ManyToOne
     @JoinColumn(name = "art_id")
     private Art art;
+
+    public ArtReview(String content, User user, Art art) {
+        this.content = content;
+        this.createDate = LocalDate.now();
+        this.likeCount = 0;
+        this.createDate = LocalDate.now();
+        updateRelation(user, art);
+    }
+
+    private void updateRelation(User user, Art art) {
+        this.user = user;
+        this.art = art;
+        user.getArtReviews().add(this);
+        art.getArtReviews().add(this);
+    }
+
+    public void updateStar(String star) {
+        this.star = star;
+    }
+
+    public void updateReview(String newContent) {
+        this.content = newContent;
+    }
+
+    public void plusLikeCount() {
+        //TODO : 동시성
+        this.likeCount++;
+    }
+
+    public void minusLikeCount() {
+        //TODO : 동시성
+        this.likeCount--;
+    }
 }

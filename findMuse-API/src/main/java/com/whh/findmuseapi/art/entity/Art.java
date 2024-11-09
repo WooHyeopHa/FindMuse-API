@@ -44,7 +44,7 @@ public class Art {
     @JoinColumn(name = "setlist_id")
     private SetList setList;
 
-    @OneToMany(mappedBy = "art", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "art", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<ArtReview> artReviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "art", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -89,5 +89,15 @@ public class Art {
             poster = files.get(0).getUrl();
         }
         return poster;
+    }
+
+    public void plusViewAndCalStar(float star) {
+        //TODO : 동시성 고려?
+        this.star = ((this.star * this.viewCnt) + star) / (this.viewCnt+1);
+        this.viewCnt++;
+    }
+
+    public void updateStar(float oldStar, float newStar) {
+        this.star = ((this.star * this.viewCnt) - oldStar + newStar) / this.viewCnt;
     }
 }

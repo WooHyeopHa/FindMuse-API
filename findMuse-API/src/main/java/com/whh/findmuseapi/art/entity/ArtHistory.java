@@ -15,6 +15,7 @@ public class ArtHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "art_history_id")
     private Long id;
+    private float star;
     private boolean activeStatus;
 
     @ManyToOne
@@ -24,4 +25,12 @@ public class ArtHistory {
     @ManyToOne
     @JoinColumn(name = "art_id")
     private Art art;
+
+    public ArtHistory(User user, Art art, float star) {
+        this.user = user;
+        this.art = art;
+        this.star = star;
+        this.activeStatus = true;
+        user.getHistories().add(this);
+    }
 }

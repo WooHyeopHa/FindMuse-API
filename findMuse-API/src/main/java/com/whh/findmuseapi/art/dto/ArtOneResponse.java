@@ -21,9 +21,10 @@ public class ArtOneResponse {
     private String detailPhoto;
     private float starScore;
     private int reviewCnt;
+    private UserInfo userInfo;
 
 
-    public static ArtOneResponse toDto(Art art) {
+    public static ArtOneResponse toDto(Art art, boolean isLiked, boolean isStared, boolean isViewed) {
         //TODO : 배경은 어떻게?
         String detialPhoto = "Empty";
         return ArtOneResponse.builder()
@@ -37,6 +38,22 @@ public class ArtOneResponse {
                 .startTime(art.getStartTime())
                 .sPark(art.getSPark())
                 .park(art.getPark())
-                .detailPhoto(detialPhoto).build();
+                .detailPhoto(detialPhoto)
+                .userInfo(UserInfo.toDto(isLiked, isStared, isViewed)).build();
+    }
+
+    @Getter
+    @Builder
+    private static class UserInfo {
+        private boolean isLiked;
+        private boolean isStared;
+        private boolean isReviewed;
+
+        private static UserInfo toDto(boolean isLiked, boolean isStared, boolean isViewed) {
+            return UserInfo.builder()
+                    .isLiked(isLiked)
+                    .isStared(isStared)
+                    .isReviewed(isViewed).build();
+        }
     }
 }

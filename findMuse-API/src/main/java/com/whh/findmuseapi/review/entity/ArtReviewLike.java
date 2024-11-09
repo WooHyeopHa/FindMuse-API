@@ -1,6 +1,5 @@
 package com.whh.findmuseapi.review.entity;
 
-import com.whh.findmuseapi.art.entity.Art;
 import com.whh.findmuseapi.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,4 +23,14 @@ public class ArtReviewLike {
     @ManyToOne
     @JoinColumn(name = "art_review_id")
     private ArtReview artReview;
+
+    public ArtReviewLike(User user, ArtReview artReview) {
+        updateRelation(user, artReview);
+    }
+
+    private void updateRelation(User user, ArtReview artReview) {
+        this.user = user;
+        this.artReview = artReview;
+        user.getReviewLikes().add(this);
+    }
 }
