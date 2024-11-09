@@ -19,9 +19,9 @@ public class ReviewContoller {
     /**
      * 문화예술 별 리뷰 종합
      */
-    @GetMapping("/review/{artId}")
-    public ApiResponse<?> getArtReview(@PathVariable long artId, @RequestParam(required = false, defaultValue = "date", value = "sort") String creteria) {
-       return ApiResponse.createSuccess(ResponseCode.SUCCESS, reviewService.getArtReview(artId, creteria));
+    @GetMapping("/review/{userId}/{artId}")
+    public ApiResponse<?> getArtReview(@PathVariable long userId, @PathVariable long artId, @RequestParam(required = false, defaultValue = "date", value = "sort") String creteria) {
+       return ApiResponse.createSuccess(ResponseCode.SUCCESS, reviewService.getArtReview(artId, userId, creteria));
     }
 
     /**

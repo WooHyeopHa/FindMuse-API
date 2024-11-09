@@ -1,6 +1,7 @@
 package com.whh.findmuseapi.review.dto;
 
 import com.whh.findmuseapi.review.entity.ArtReview;
+import com.whh.findmuseapi.review.entity.ArtReviewLike;
 import com.whh.findmuseapi.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class AllReviewResponse {
     private List<SingleReviewResponse> reviewList;
 
 
-    public static AllReviewResponse toDto(float star, List<ArtReview> reviews) {
+    public static AllReviewResponse toDto(float star, List<Object[]> reviews) {
         return AllReviewResponse.builder()
                 .reviewCnt(reviews.size())
                 .totalStar(star)
@@ -32,19 +33,23 @@ public class AllReviewResponse {
         private String star;
         private String content;
         private String date;
+        private boolean isThumbed;
         private int thumbsUpCnt;
 
-        private static List<SingleReviewResponse> toDto(List<ArtReview> reviews) {
+        private static List<SingleReviewResponse> toDto(List<Object[]> reviews) {
             return reviews.stream()
                     .map(r -> {
-                        User writeUser = r.getUser();
+                        ArtReview review = (ArtReview) r[0];
+                        ArtReviewLike reviewLike = (ArtReviewLike) r[1];
+                        User writeUser = review.getUser();
                         return SingleReviewResponse.builder()
                                 .name(writeUser.getNickname())
                                 .userPhoto(writeUser.getProfileImageUrl())
-                                .star(r.getStar())
-                                .content(r.getContent())
-                                .date(r.getCreateDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
-                                .thumbsUpCnt(r.getLikeCount()).build();
+                                .star(review.getStar())
+                                .content(review.getContent())
+                                .date(review.getCreateDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+                                .isThumbed(reviewLike.getUser() != null)
+                                .thumbsUpCnt(review.getLikeCount()).build();
                     }).toList();
         }
     }

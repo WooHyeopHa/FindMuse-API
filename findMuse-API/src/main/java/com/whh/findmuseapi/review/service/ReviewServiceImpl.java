@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -33,16 +34,16 @@ public class ReviewServiceImpl implements ReviewService{
      * 모든 리뷰 조회
      */
     @Override
-    public AllReviewResponse getArtReview(long artId, String creteria) {
+    public AllReviewResponse getArtReview(long artId, long userId, String creteria) {
         Art findArt = artRepository.findById(artId).orElseThrow();
-        List<ArtReview> artReviews;
+        List<Object[]> result;
         if(creteria.equals("like")) {
-            artReviews = reviewRepository.findAllByArtOrderByLikeCountDesc(findArt).orElse(new ArrayList<>());
+            result = reviewRepository.findAllByArtOrderByLikeCountDesc(artId, userId).orElse(new ArrayList<>());
         }
         else{
-            artReviews = reviewRepository.findAllByArtOrderByCreateDateDesc(findArt).orElse(new ArrayList<>());
+            result = reviewRepository.findAllByArtOrderByCreateDateDesc(artId, userId).orElse(new ArrayList<>());
         }
-        return AllReviewResponse.toDto(findArt.getStar(), artReviews);
+        return AllReviewResponse.toDto(findArt.getStar(), result);
     }
 
     /**
@@ -99,10 +100,10 @@ public class ReviewServiceImpl implements ReviewService{
         User findUser = userRepository.findById(reviewLikeRequest.getUserId()).orElseThrow();
         ArtReview artReview = reviewRepository.findById(reviewLikeRequest.getReviewId()).orElseThrow();
 
-        //이미 공감한 댓글인 경우
-        if (reviewLikeRepository.existsByUserAndArtReview(findUser, artReview)) {
-            return false;
-        }
+//        //이미 공감한 댓글인 경우
+//        if (reviewLikeRepository.existsByUserAndArtReview(findUser, artReview)) {
+//            return false;
+//        }
         artReview.plusLikeCount();
         reviewLikeRepository.save(new ArtReviewLike(findUser, artReview));
         return true;
