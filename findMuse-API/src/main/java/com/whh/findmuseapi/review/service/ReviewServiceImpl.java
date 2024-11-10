@@ -123,8 +123,8 @@ public class ReviewServiceImpl implements ReviewService{
         Art findArt = artRepository.findById(reviewStarRequest.getArtId()).orElseThrow();
         //이미 관람한 경우
         if (reviewStarRequest.isStared()) {
-            ArtHistory findHostory = artHistoryRepository.findByUserAndArt(findUser, findArt);
-            findArt.updateStar(findHostory.getStar(), reviewStarRequest.getStar());
+            ArtHistory findHistory = artHistoryRepository.findByUserAndArt(findUser, findArt);
+            findArt.updateStar(findHistory.getStar(), reviewStarRequest.getStar());
         }
         // 처음 관람인 경우
         else {
