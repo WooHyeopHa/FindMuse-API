@@ -18,7 +18,7 @@ public class AllReviewResponse {
     private List<SingleReviewResponse> reviewList;
 
 
-    public static AllReviewResponse toDto(float star, List<Object[]> reviews) {
+    public static AllReviewResponse toDto(float star, List<ArtReview> reviews) {
         return AllReviewResponse.builder()
                 .reviewCnt(reviews.size())
                 .totalStar(star)
@@ -36,20 +36,18 @@ public class AllReviewResponse {
         private boolean isThumbed;
         private int thumbsUpCnt;
 
-        private static List<SingleReviewResponse> toDto(List<Object[]> reviews) {
+        private static List<SingleReviewResponse> toDto(List<ArtReview> reviews) {
             return reviews.stream()
                     .map(r -> {
-                        ArtReview review = (ArtReview) r[0];
-                        ArtReviewLike reviewLike = (ArtReviewLike) r[1];
-                        User writeUser = review.getUser();
+                        User writeUser = r.getUser();
                         return SingleReviewResponse.builder()
                                 .name(writeUser.getNickname())
                                 .userPhoto(writeUser.getProfileImageUrl())
-                                .star(review.getStar())
-                                .content(review.getContent())
-                                .date(review.getCreateDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
-                                .isThumbed(reviewLike.getUser() != null)
-                                .thumbsUpCnt(review.getLikeCount()).build();
+                                .star(r.getStar())
+                                .content(r.getContent())
+                                .date(r.getCreateDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+                                .isThumbed(!r.getReviewLikes().isEmpty())
+                                .thumbsUpCnt(r.getReviewLikes().size()).build();
                     }).toList();
         }
     }

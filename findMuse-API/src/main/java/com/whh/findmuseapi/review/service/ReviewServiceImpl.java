@@ -36,7 +36,7 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public AllReviewResponse getArtReview(long artId, long userId, String creteria) {
         Art findArt = artRepository.findById(artId).orElseThrow();
-        List<Object[]> result;
+        List<ArtReview> result;
         if(creteria.equals("like")) {
             result = reviewRepository.findAllByArtOrderByLikeCountDesc(artId, userId).orElse(new ArrayList<>());
         }
@@ -85,7 +85,6 @@ public class ReviewServiceImpl implements ReviewService{
 
         if (findReview.getUser().getId() == userId) {
             reviewRepository.delete(findReview);
-            return;
         }
         //TODO : 에외처리
     }
@@ -96,15 +95,9 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     @Transactional
     public boolean likeReview(ReviewLikeRequest reviewLikeRequest) {
-        //TODO : 1. 동시성 제어
         User findUser = userRepository.findById(reviewLikeRequest.getUserId()).orElseThrow();
         ArtReview artReview = reviewRepository.findById(reviewLikeRequest.getReviewId()).orElseThrow();
 
-//        //이미 공감한 댓글인 경우
-//        if (reviewLikeRepository.existsByUserAndArtReview(findUser, artReview)) {
-//            return false;
-//        }
-        artReview.plusLikeCount();
         reviewLikeRepository.save(new ArtReviewLike(findUser, artReview));
         return true;
     }
