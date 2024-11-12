@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.whh.findmuseapi.common.exception.CustomBadRequestException;
+import com.whh.findmuseapi.common.constant.ResponseCode;
+import com.whh.findmuseapi.common.exception.CBadRequestException;
 import com.whh.findmuseapi.common.constant.Infos.Role;
+import com.whh.findmuseapi.common.exception.CInternalServerError;
 import com.whh.findmuseapi.ios.dto.AppleRevokeRequest;
 import com.whh.findmuseapi.ios.dto.key.ApplePublicKeys;
 import com.whh.findmuseapi.jwt.service.JwtService;
@@ -88,7 +90,7 @@ public class AppleService {
             return findUser;
             
         } catch (JsonProcessingException e) {
-            throw new CustomBadRequestException(appleLoginResponse.getIdToken());
+            throw new CInternalServerError(ResponseCode.JSON_PROCESSING_EXCEPTION, appleLoginResponse.getIdToken());
         }
     }
     
@@ -111,7 +113,7 @@ public class AppleService {
                 .signWith(SignatureAlgorithm.ES256, getPrivateKey())
                 .compact();
         } catch (IOException e) {
-            throw new CustomBadRequestException("Apple 키 파일이 인식되지 않음 : " + appleProperties.getKeyPath());
+            throw new CInternalServerError(ResponseCode.IO_EXCEPTION, "Apple 키 파일");
         }
     }
     
