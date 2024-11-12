@@ -28,6 +28,7 @@ public class AllReviewResponse {
     @Builder
     @Getter
     private static class SingleReviewResponse {
+        private Long reviewId;
         private String name;
         private String userPhoto;
         private String star;
@@ -41,6 +42,7 @@ public class AllReviewResponse {
                     .map(r -> {
                         User writeUser = r.getUser();
                         return SingleReviewResponse.builder()
+                                .reviewId(r.getId())
                                 .name(writeUser.getNickname())
                                 .userPhoto(writeUser.getProfileImageUrl())
                                 .star(r.getStar())
