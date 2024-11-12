@@ -83,9 +83,9 @@ public class GlobalExceptionAdvice {
 //    }
 //
     // 500 INTERNAL_SERVER_ERROR: JSON 처리 오류 처리
-    @ExceptionHandler(CInternalServerError.class)
+    @ExceptionHandler(CInternalServerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiResponse<?> handleServerException(CInternalServerError ex) {
+    public ApiResponse<?> handleServerException(CInternalServerException ex) {
         ex.printStackTrace();
         return ApiResponse.createError(ex.getStatus(), ex.getMessage());
     }

@@ -6,7 +6,7 @@ import com.whh.findmuseapi.art.repository.ArtHistoryRepository;
 import com.whh.findmuseapi.art.repository.ArtRepository;
 import com.whh.findmuseapi.common.exception.CBadRequestException;
 import com.whh.findmuseapi.common.exception.CForbiddenException;
-import com.whh.findmuseapi.common.exception.CInternalServerError;
+import com.whh.findmuseapi.common.exception.CInternalServerException;
 import com.whh.findmuseapi.common.exception.CNotFoundException;
 import com.whh.findmuseapi.review.dto.*;
 import com.whh.findmuseapi.review.entity.ArtReview;
@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -67,7 +66,7 @@ public class ReviewServiceImpl implements ReviewService{
         try {
             reviewRepository.save(artReview);
         } catch (IllegalArgumentException ex) {
-            throw new CInternalServerError("엔티티 저장에 실패했습니다.");
+            throw new CInternalServerException("엔티티 저장에 실패했습니다.");
         }
     }
 
@@ -113,7 +112,7 @@ public class ReviewServiceImpl implements ReviewService{
             reviewLikeRepository.save(new ArtReviewLike(findUser, artReview));
             return true;
         } catch (IllegalArgumentException ex) {
-            throw new CInternalServerError("엔티티 저장에 실패했습니다.");
+            throw new CInternalServerException("엔티티 저장에 실패했습니다.");
         }
     }
 

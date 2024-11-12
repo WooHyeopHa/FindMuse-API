@@ -8,7 +8,7 @@ import com.whh.findmuseapi.art.repository.ArtLikeRepository;
 import com.whh.findmuseapi.art.repository.ArtRepository;
 import com.whh.findmuseapi.common.constant.Infos.ArtType;
 import com.whh.findmuseapi.common.exception.CBadRequestException;
-import com.whh.findmuseapi.common.exception.CInternalServerError;
+import com.whh.findmuseapi.common.exception.CInternalServerException;
 import com.whh.findmuseapi.common.exception.CNotFoundException;
 import com.whh.findmuseapi.review.repository.ReviewRepository;
 import com.whh.findmuseapi.user.entity.User;
@@ -84,7 +84,7 @@ public class ArtServiceImpl implements ArtService{
             String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
             return artRepository.findArtByTodayAndRandom(today);
         } catch(DateTimeException ex) {
-            throw new CInternalServerError("날짜 변환에 실패하였습니다.");
+            throw new CInternalServerException("날짜 변환에 실패하였습니다.");
         }
     }
 
