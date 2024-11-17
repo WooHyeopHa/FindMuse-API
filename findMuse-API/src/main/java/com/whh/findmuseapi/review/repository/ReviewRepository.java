@@ -15,14 +15,12 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<ArtReview, Long> {
 
-//    Optional<List<ArtReview>> findAllByArtOrderByCreateDateDesc(Art art);
-//    Optional<List<ArtReview>> findAllByArtOrderByLikeCountDesc(Art art);
     boolean existsByUserAndArt(User user, Art art);
     ArtReview findByUserAndArt(User user, Art art);
 
-    @Query("select ar, arl from ArtReview ar left join ArtReviewLike arl on ar.id = arl.artReview.id where ar.art.id = :artId and arl.user.id = :userId order by ar.createDate desc")
-    Optional<List<Object[]>> findAllByArtOrderByCreateDateDesc(Long artId, Long userId);
+    @Query("select ar from ArtReview ar left join ar.reviewLikes arl on ar.id = arl.artReview.id where ar.art.id = :artId and arl.user.id = :userId order by ar.createDate desc")
+    Optional<List<ArtReview>> findAllByArtOrderByCreateDateDesc(Long artId, Long userId);
 
-    @Query("select ar, arl from ArtReview ar left join ArtReviewLike arl on ar.id = arl.artReview.id where ar.art.id = :artId and arl.user.id = :userId order by ar.likeCount desc")
-    Optional<List<Object[]>> findAllByArtOrderByLikeCountDesc(Long artId, Long userId);
+    @Query("select ar from ArtReview ar left join ar.reviewLikes arl on ar.id = arl.artReview.id where ar.art.id = :artId and arl.user.id = :userId order by ar.likeCount desc")
+    Optional<List<ArtReview>> findAllByArtOrderByLikeCountDesc(Long artId, Long userId);
 }
