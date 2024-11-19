@@ -16,4 +16,6 @@ public interface ArtService {
     ArtHomeResponse getArtByHome(Long userId);
 
     MapResponse getMapInfo();
+
+    ArtTicketResponse getTicketInfo(long artId);
 }

@@ -4,6 +4,7 @@ import com.whh.findmuseapi.art.dto.ArtHomeResponse;
 import com.whh.findmuseapi.art.dto.ArtLikeRequest;
 import com.whh.findmuseapi.art.dto.ArtListResponse;
 import com.whh.findmuseapi.art.dto.ArtOneResponse;
+import com.whh.findmuseapi.art.dto.ArtTicketResponse;
 import com.whh.findmuseapi.art.service.ArtService;
 import com.whh.findmuseapi.common.constant.ResponseCode;
 import com.whh.findmuseapi.common.util.ApiResponse;
@@ -43,6 +44,12 @@ public class ArtController {
     @GetMapping("/art/one/{artId}/{userId}")
     public ApiResponse<ArtOneResponse> getArtOne(@PathVariable Long artId, @PathVariable Long userId) {
         ArtOneResponse response = artService.getArtInfoOne(artId, userId);
+        return ApiResponse.createSuccess(ResponseCode.SUCCESS, response);
+    }
+
+    @GetMapping("/art/ticket/{artId}")
+    public ApiResponse<?> getTicketInfo(@PathVariable long artId) {
+        ArtTicketResponse response = artService.getTicketInfo(artId);
         return ApiResponse.createSuccess(ResponseCode.SUCCESS, response);
     }
 
