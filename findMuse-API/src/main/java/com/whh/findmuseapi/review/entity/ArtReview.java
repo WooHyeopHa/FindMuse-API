@@ -31,12 +31,11 @@ public class ArtReview {
     @JoinColumn(name = "art_id")
     private Art art;
 
-    @OneToMany(mappedBy = "art", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "artReview", fetch = FetchType.LAZY, orphanRemoval = true)
     List<ArtReviewLike> reviewLikes = new ArrayList<>();
 
     public ArtReview(String content, User user, Art art) {
         this.content = content;
-        this.createDate = LocalDate.now();
         this.createDate = LocalDate.now();
         updateRelation(user, art);
     }
