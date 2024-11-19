@@ -39,9 +39,9 @@ public class Art {
     private String park;        //주차장 여부
     private float star;           //평점
 
-    @OneToOne
-    @JoinColumn(name = "setlist_id")
-    private SetList setList;
+//    @OneToOne
+//    @JoinColumn(name = "setlist_id")
+//    private SetList setList;
 
     @OneToMany(mappedBy = "art", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<ArtReview> artReviews = new ArrayList<>();
