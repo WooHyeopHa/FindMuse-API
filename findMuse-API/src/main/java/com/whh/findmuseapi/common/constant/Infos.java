@@ -72,8 +72,26 @@ public class Infos {
             }
             throw new CBadRequestException("일치하는 장르가 없습니다. 다시 요청해주세요");
         }
+
     }
 
+    @Getter
+    @RequiredArgsConstructor
+    public enum ReviewSortType {
+        LATEST("최신순"),
+        POPULAR("인기순");
+
+        private final String description;
+
+        public static ReviewSortType fromString(String value) {
+            for (ReviewSortType type : ReviewSortType.values()) {
+                if (type.getDescription().equals(value)) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException("Invalid ReviewSortType: " + value);
+        }
+    }
 
     @RequiredArgsConstructor
     public enum AlarmType {
