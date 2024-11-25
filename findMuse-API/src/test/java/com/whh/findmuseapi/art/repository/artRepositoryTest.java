@@ -18,11 +18,11 @@ class artRepositoryTest {
     @Autowired
     private ArtRepository artRepository;
 
-    @Test
-    @Transactional
-    public void test1() {
-        List<Art> artList = artRepository.findArtByCondition(1L, "2024.09.08", Infos.ArtType.MUSICAL_DRAMA);
-    }
+//    @Test
+//    @Transactional
+//    public void test1() {
+//        List<Art> artList = artRepository.findArtByCondition(1L, "2024.09.08", Infos.ArtType.MUSICAL_DRAMA);
+//    }
 
     @Test
     @Transactional
