@@ -46,6 +46,14 @@ pipeline {
             }
         }
 
+        stage('Build') {
+            steps {
+                dir("${env.PROJECT_DIRECTORY}") {
+                    sh './gradlew clean build'
+                }
+            }
+        }
+
         stage('Build and Push Docker Image') {
             steps {
                 script {
