@@ -146,9 +146,11 @@ public class UserInfoService {
         List<Object[]> reviews;
         if (sortType == Infos.ReviewSortType.LATEST) {
             reviews = reviewRepository.findAllByUserOrderByCreateDateDesc(user.getId());
-        } else if (sortType == Infos.ReviewSortType.POPULAR) {
-            reviews = reviewRepository.findAllByUserOrderByLikeCountDesc(user.getId());
-        } else {
+        }
+//        else if (sortType == Infos.ReviewSortType.POPULAR) {
+//            reviews = reviewRepository.findAllByUserOrderByLikeCountDesc(user.getId());
+//        }
+        else {
             throw new IllegalArgumentException("지원되지 않는 정렬 기준입니다.");
         }
 

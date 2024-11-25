@@ -29,7 +29,7 @@ public record ReviewResponse(
                 .date(review.getCreateDate().toString())
                 .date(review.getCreateDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .isThumbed(reviewLike != null && reviewLike.getUser() != null)
-                .thumbsUpCnt(review.getLikeCount())
+                .thumbsUpCnt(review.getReviewLikes().size())
                 .build();
     }
 }

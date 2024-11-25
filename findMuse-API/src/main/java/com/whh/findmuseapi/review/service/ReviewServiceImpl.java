@@ -42,11 +42,11 @@ public class ReviewServiceImpl implements ReviewService{
         userRepository.findById(userId).orElseThrow(() -> new CNotFoundException(userId + "은(는) 존재하지 않는 사용자입니다."));
 
         List<ArtReview> result;
-//        if(creteria.equals("like")) {
-//            result = reviewRepository.findAllByArtOrderByLikeCountDesc(artId, userId);
-//        }
-        if(creteria.equals("date")){
-            result = reviewRepository.findAllByArtOrderByCreateDateDesc(artId, userId);
+        if(creteria.equals("like")) {
+            result = reviewRepository.findAllByArtOrderByCreateDateDesc(artId, userId).orElse(new ArrayList<>());
+        }
+        else if(creteria.equals("date")){
+            result = reviewRepository.findAllByArtOrderByCreateDateDesc(artId, userId).orElse(new ArrayList<>());
         }
         else {
             throw new CBadRequestException("정렬 조건이 잘못되었습니다. 다시 요청해주세요.");
