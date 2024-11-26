@@ -15,15 +15,19 @@ import com.whh.findmuseapi.review.repository.ReviewLikeRepository;
 import com.whh.findmuseapi.review.repository.ReviewRepository;
 import com.whh.findmuseapi.user.entity.User;
 import com.whh.findmuseapi.user.repository.UserRepository;
+import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class ReviewServiceImpl implements ReviewService{
 
@@ -41,12 +45,15 @@ public class ReviewServiceImpl implements ReviewService{
         Art findArt = artRepository.findById(artId).orElseThrow(() -> new CNotFoundException(artId + "은(는) 존재하지 않는 문화예술입니다."));
         userRepository.findById(userId).orElseThrow(() -> new CNotFoundException(userId + "은(는) 존재하지 않는 사용자입니다."));
 
-        List<ArtReview> result;
+        List<Tuple> result;
         if(creteria.equals("like")) {
-            result = reviewRepository.findAllByArtOrderByCreateDateDesc(artId, userId).orElse(new ArrayList<>());
+            result = reviewRepository.findAllReviewByUser(artId, userId).orElse(new ArrayList<>());
+            result.sort(Comparator.comparing(a -> {
+                ArtReview review = (ArtReview) a.get(0);
+                return review.getReviewLikes().size();}, Comparator.reverseOrder()));
         }
         else if(creteria.equals("date")){
-            result = reviewRepository.findAllByArtOrderByCreateDateDesc(artId, userId).orElse(new ArrayList<>());
+            result = reviewRepository.findAllReviewByUserCreateDateDesc(artId, userId).orElse(new ArrayList<>());
         }
         else {
             throw new CBadRequestException("정렬 조건이 잘못되었습니다. 다시 요청해주세요.");

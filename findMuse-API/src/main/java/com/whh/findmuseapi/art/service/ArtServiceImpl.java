@@ -51,6 +51,15 @@ public class ArtServiceImpl implements ArtService{
     }
 
     /**
+     * 예매처 정보
+     */
+    @Override
+    public ArtTicketResponse getTicketInfo(long artId) {
+        Art findArt = artRepository.findById(artId).orElseThrow(() -> new CNotFoundException(artId + "은(는) 존재하지 않는 문화예술입니다."));
+        return ArtTicketResponse.toDto(findArt.getTickets());
+    }
+
+    /**
      * 조건에 따른 문화예술 리스트 조회
      */
     @Override

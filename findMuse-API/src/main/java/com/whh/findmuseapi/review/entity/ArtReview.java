@@ -37,7 +37,6 @@ public class ArtReview {
     public ArtReview(String content, User user, Art art) {
         this.content = content;
         this.createDate = LocalDate.now();
-        this.createDate = LocalDate.now();
         updateRelation(user, art);
     }
 
