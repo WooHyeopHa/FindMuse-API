@@ -126,6 +126,10 @@ public class User {
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
+    
+    public void updateIsOnboardingFinished() {
+        this.isOnboardingFinished = true;
+    }
 
     public void updateLocation(String location) {
         this.location = location;

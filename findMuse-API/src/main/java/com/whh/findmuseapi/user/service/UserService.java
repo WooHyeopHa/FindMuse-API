@@ -39,6 +39,7 @@ public class UserService {
         if (userRepository.existsByNickname(nicknameRequest.nickname())) throw new CBadRequestException("존재하는 닉네임입니다.");
 
         user.updateNickname(nicknameRequest.nickname());
+        user.updateIsOnboardingFinished();
         user.authorizeUser();
     }
 

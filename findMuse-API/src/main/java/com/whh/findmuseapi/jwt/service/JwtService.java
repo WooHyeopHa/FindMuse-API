@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.whh.findmuseapi.common.constant.ResponseCode;
 import com.whh.findmuseapi.common.exception.CBadRequestException;
 import com.whh.findmuseapi.common.exception.CUnAuthorizationException;
+import com.whh.findmuseapi.jwt.dto.RefreshTokenDto;
 import com.whh.findmuseapi.jwt.property.JwtProperties;
 import com.whh.findmuseapi.user.entity.User;
 import com.whh.findmuseapi.user.repository.UserRepository;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Getter
@@ -175,10 +177,22 @@ public class JwtService {
      * @param user
      * @return reIssuedRefreshToken
      */
+    @Transactional
     public String reIssueRefreshToken(User user) {
         String reIssuedRefreshToken = createRefreshToken();
         user.updateRefreshToken(reIssuedRefreshToken);
         userRepository.saveAndFlush(user);
         return reIssuedRefreshToken;
+    }
+    
+    @Transactional
+    public RefreshTokenDto reIssueRefreshToken(RefreshTokenDto refreshTokenDto) {
+        User user = userRepository.findByRefreshToken(refreshTokenDto.refreshToken())
+            .orElseThrow(() -> new CBadRequestException("유저를 찾을 수 없습니다."));
+        
+        String refreshToken = reIssueRefreshToken(user);
+        return RefreshTokenDto.builder()
+            .refreshToken(refreshToken)
+            .build();
     }
 }
