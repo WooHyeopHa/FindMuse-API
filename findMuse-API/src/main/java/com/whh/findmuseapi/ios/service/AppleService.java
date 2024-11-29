@@ -6,6 +6,7 @@ import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.whh.findmuseapi.common.constant.ResponseCode;
 import com.whh.findmuseapi.common.constant.Infos.Role;
+import com.whh.findmuseapi.common.exception.CBadRequestException;
 import com.whh.findmuseapi.common.exception.CInternalServerException;
 import com.whh.findmuseapi.ios.dto.AppleRevokeRequest;
 import com.whh.findmuseapi.ios.dto.key.ApplePublicKeys;
@@ -161,6 +162,15 @@ public class AppleService {
         String responseBody = appleAuthClient.revoke(appleRevokeRequest);
         
         log.info("애플 연결해제 요청 결과 : " + responseBody);
+    }
+    
+    @Transactional
+    public void testLogin(HttpServletResponse response) {
+        User user = userRepository.findByAccountId("test_user2")
+            .orElseThrow(() -> new CBadRequestException("테스트 유저를 찾을 수 없습니다."));
+        
+        String refreshToken = jwtService.reIssueRefreshToken(user);
+        jwtService.reIssueAccessToken(response, refreshToken);
     }
     
     public void deleteUserAcount(User user) {

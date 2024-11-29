@@ -187,6 +187,7 @@ public class JwtService {
     
     @Transactional
     public RefreshTokenDto reIssueRefreshToken(RefreshTokenDto refreshTokenDto) {
+        log.info("리프레시 토큰 : " + refreshTokenDto.refreshToken());
         User user = userRepository.findByRefreshToken(refreshTokenDto.refreshToken())
             .orElseThrow(() -> new CBadRequestException("유저를 찾을 수 없습니다."));
         

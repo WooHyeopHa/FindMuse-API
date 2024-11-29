@@ -41,6 +41,7 @@ public class UserService {
         user.updateNickname(nicknameRequest.nickname());
         user.updateIsOnboardingFinished();
         user.authorizeUser();
+        userRepository.save(user);
     }
 
     @Description("사용자 닉네임 중복 조회")

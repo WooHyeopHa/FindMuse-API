@@ -44,10 +44,7 @@ public class AppleController {
     @Operation(summary = "테스트 토큰 발급")
     @GetMapping("/test")
     public ApiResponse<?> testLogin(HttpServletResponse response) {
-        String acessToekn = jwtService.createAccessToken("test@email.com");
-        String refreshToken = jwtService.createRefreshToken();
-        jwtService.sendAccessAndRefreshToken(response, acessToekn, refreshToken);
-
+        appleService.testLogin(response);
         return ApiResponse.createSuccessWithNoContent(ResponseCode.RESOURCE_CREATED);
     }
 }
