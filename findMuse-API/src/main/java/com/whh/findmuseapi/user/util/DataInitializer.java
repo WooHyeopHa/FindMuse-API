@@ -15,7 +15,6 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // 사용자 정보 생성
 //        User user = User.builder()
 //                .email("eeehhhggg@gmail.com")
 //                .nickname("이혁규")
@@ -23,8 +22,7 @@ public class DataInitializer implements CommandLineRunner {
 //                .accountId("test_user2")
 //                .refreshToken("testRefreshToken2")
 //                .build();
-
-        // 사용자 저장
+//
 //        userRepository.save(user);
     }
 }

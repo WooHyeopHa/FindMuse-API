@@ -138,42 +138,42 @@ public class UserInfoService {
         return getMyArtHistory(user, artTypeInfo);
     }
 
-    @Description("행사 리뷰 조회")
-    @Transactional(readOnly = true)
-    public List<ReviewResponse> getMyReview(User user, String creteria) {
-        Infos.ReviewSortType sortType = Infos.ReviewSortType.fromString(creteria);
-
-        List<Object[]> reviews;
-        if (sortType == Infos.ReviewSortType.LATEST) {
-            reviews = reviewRepository.findAllByUserOrderByCreateDateDesc(user.getId());
-        }
-//        else if (sortType == Infos.ReviewSortType.POPULAR) {
-//            reviews = reviewRepository.findAllByUserOrderByLikeCountDesc(user.getId());
+//    @Description("행사 리뷰 조회")
+//    @Transactional(readOnly = true)
+//    public List<ReviewResponse> getMyReview(User user, String creteria) {
+//        Infos.ReviewSortType sortType = Infos.ReviewSortType.fromString(creteria);
+//
+//        List<Object[]> reviews;
+//        if (sortType == Infos.ReviewSortType.LATEST) {
+//            reviews = reviewRepository.findAllByUserOrderByCreateDateDesc(user.getId());
 //        }
-        else {
-            throw new IllegalArgumentException("지원되지 않는 정렬 기준입니다.");
-        }
+////        else if (sortType == Infos.ReviewSortType.POPULAR) {
+////            reviews = reviewRepository.findAllByUserOrderByLikeCountDesc(user.getId());
+////        }
+//        else {
+//            throw new IllegalArgumentException("지원되지 않는 정렬 기준입니다.");
+//        }
+//
+//        return reviews.stream()
+//                .map(r -> {
+//                    ArtReview review = (ArtReview) r[0];
+//                    ArtReviewLike reviewLike = (ArtReviewLike) r[1];
+//                    return ReviewResponse.toDto(review, reviewLike);
+//                })
+//                .toList();
+//    }
 
-        return reviews.stream()
-                .map(r -> {
-                    ArtReview review = (ArtReview) r[0];
-                    ArtReviewLike reviewLike = (ArtReviewLike) r[1];
-                    return ReviewResponse.toDto(review, reviewLike);
-                })
-                .toList();
-    }
-
-    @Description("상대방 행사 리뷰 조회")
-    @Transactional(readOnly = true)
-    public List<ReviewResponse> getUserReview(long userId, String creteria) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
-
-        if (!user.isShowStatus()) {
-            throw new RuntimeException("감상내역 비공개 뮤즈에요!");
-        }
-        return getMyReview(user, creteria);
-    }
+//    @Description("상대방 행사 리뷰 조회")
+//    @Transactional(readOnly = true)
+//    public List<ReviewResponse> getUserReview(long userId, String creteria) {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+//
+//        if (!user.isShowStatus()) {
+//            throw new RuntimeException("감상내역 비공개 뮤즈에요!");
+//        }
+//        return getMyReview(user, creteria);
+//    }
 
     @Description("레벨 자세히보기")
     @Transactional(readOnly = true)

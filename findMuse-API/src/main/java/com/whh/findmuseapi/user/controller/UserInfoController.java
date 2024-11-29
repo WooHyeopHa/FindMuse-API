@@ -63,24 +63,24 @@ public class UserInfoController {
     ) {
         return ApiResponse.createSuccess(ResponseCode.SUCCESS, userInfoService.getUserArtHistory(userId, artTypeInfo));
     }
-
-    @Operation(summary = "마이페이지 : 행사 리뷰 조회")
-    @GetMapping("/reviews")
-    public ApiResponse<List<ReviewResponse>> getMyReview(
-            @AuthenticationPrincipal User user,
-            @RequestParam String creteria
-    ) {
-        return ApiResponse.createSuccess(ResponseCode.SUCCESS, userInfoService.getMyReview(user, creteria));
-    }
-
-    @Operation(summary = "마이페이지 : 상대방 행사 리뷰 조회")
-    @GetMapping("/reviews/{userId}")
-    public ApiResponse<List<ReviewResponse>> getUserReview(
-            @PathVariable long userId,
-            @RequestParam String creteria
-    ) {
-        return ApiResponse.createSuccess(ResponseCode.SUCCESS, userInfoService.getUserReview(userId, creteria));
-    }
+//
+//    @Operation(summary = "마이페이지 : 행사 리뷰 조회")
+//    @GetMapping("/reviews")
+//    public ApiResponse<List<ReviewResponse>> getMyReview(
+//            @AuthenticationPrincipal User user,
+//            @RequestParam String creteria
+//    ) {
+//        return ApiResponse.createSuccess(ResponseCode.SUCCESS, userInfoService.getMyReview(user, creteria));
+//    }
+//
+//    @Operation(summary = "마이페이지 : 상대방 행사 리뷰 조회")
+//    @GetMapping("/reviews/{userId}")
+//    public ApiResponse<List<ReviewResponse>> getUserReview(
+//            @PathVariable long userId,
+//            @RequestParam String creteria
+//    ) {
+//        return ApiResponse.createSuccess(ResponseCode.SUCCESS, userInfoService.getUserReview(userId, creteria));
+//    }
 
     @Operation(summary = "마이페이지 : 사용자 취향 조회")
     @GetMapping("/tastes/{userId}")

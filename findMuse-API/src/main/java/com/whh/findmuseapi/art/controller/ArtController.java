@@ -2,9 +2,10 @@ package com.whh.findmuseapi.art.controller;
 
 import com.whh.findmuseapi.art.dto.response.ArtHomeResponse;
 import com.whh.findmuseapi.art.dto.ArtLikeRequest;
-import com.whh.findmuseapi.art.dto.ArtListResponse;
-import com.whh.findmuseapi.art.dto.ArtOneResponse;
+//import com.whh.findmuseapi.art.dto.ArtListResponse;
+//import com.whh.findmuseapi.art.dto.ArtOneResponse;
 import com.whh.findmuseapi.art.dto.ArtTicketResponse;
+import com.whh.findmuseapi.art.dto.response.ArtOneResponse;
 import com.whh.findmuseapi.art.service.ArtService;
 import com.whh.findmuseapi.common.constant.ResponseCode;
 import com.whh.findmuseapi.common.util.ApiResponse;
@@ -23,11 +24,11 @@ public class ArtController {
     /**
      * 날짜, 장르, 정렬 필터 기준 문화예술 전체 불러오기
      */
-    @GetMapping("/art/list/condition/{userId}")
-    public ApiResponse<ArtListResponse> getArtByCondition(@PathVariable Long userId, @RequestParam String date, @RequestParam List<String> genre, @RequestParam String sort) {
-        ArtListResponse response = artService.getArtByCondition(userId, date, genre, sort);
-        return ApiResponse.createSuccess(ResponseCode.SUCCESS, response);
-    }
+//    @GetMapping("/art/list/condition/{userId}")
+//    public ApiResponse<ArtListResponse> getArtByCondition(@PathVariable Long userId, @RequestParam String date, @RequestParam List<String> genre, @RequestParam String sort) {
+//        ArtListResponse response = artService.getArtByCondition(userId, date, genre, sort);
+//        return ApiResponse.createSuccess(ResponseCode.SUCCESS, response);
+//    }
 
     /**
      * 취향 장르별 랜덤 3개 불러오기 - 홈화면
