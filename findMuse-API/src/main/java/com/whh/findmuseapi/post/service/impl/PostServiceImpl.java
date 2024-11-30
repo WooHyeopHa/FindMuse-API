@@ -7,7 +7,8 @@ import com.whh.findmuseapi.common.exception.CNotFoundException;
 import com.whh.findmuseapi.common.exception.CUnAuthorizationException;
 import com.whh.findmuseapi.post.dto.request.PostCreateRequest;
 import com.whh.findmuseapi.post.dto.request.PostUpdateRequest;
-import com.whh.findmuseapi.post.dto.response.PostListReadResponse;
+import com.whh.findmuseapi.post.dto.response.PostCreateResponse;
+import com.whh.findmuseapi.post.dto.response.PostListDetailResponse;
 import com.whh.findmuseapi.post.dto.response.PostListResponse;
 import com.whh.findmuseapi.post.dto.response.PostOneReadResponse;
 import com.whh.findmuseapi.post.entity.Post;
@@ -21,9 +22,12 @@ import com.whh.findmuseapi.post.repository.VolunteerRepository;
 import com.whh.findmuseapi.post.service.PostService;
 import com.whh.findmuseapi.user.entity.User;
 import com.whh.findmuseapi.user.repository.UserRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -137,9 +141,35 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
     }
 
-    @Transactional
+    /**
+     * 모집글 목록 조회
+     */
     @Override
     public void checkWriter(User user, Post post) {
+    public PostListResponse getPostList(long userId, String creteria) {
+        User findUser = userRepository.findById(userId).orElseThrow(() -> new CNotFoundException("회원: " + userId));
+        Infos.SortType sortType = Infos.SortType.convertStringToSortType(creteria);
+
+        List<Post> postList = new ArrayList<>();
+        if (sortType.equals(Infos.SortType.LATEST)) {
+            postList = postRepository.findAllByOrderByCreateDateDesc();
+        }
+        else if(sortType.equals(Infos.SortType.POPULAR)){
+            postList = postRepository.findAllByOrderByBookmarkCntDesc();
+        }
+
+        List<Bookmark> bookmarkByMe = bookmarkRepository.findAllByUser(findUser);
+        return PostListResponse.toDto(postList.stream()
+                .map(p -> {
+                    if (bookmarkByMe.stream()
+                            .anyMatch(b -> b.getPost().equals(p))) {
+                        return PostListDetailResponse.toDto(p, true);
+                    }
+                    return PostListDetailResponse.toDto(p, false);
+                })
+                .collect(Collectors.toList()));
+    }
+
         if (!post.getUser().getId().equals(user.getId())) {
             throw new CUnAuthorizationException();
         }

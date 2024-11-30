@@ -41,6 +41,8 @@ public class Post {
     private int inviteCount;
     @NotNull
     private int viewCount;
+    private int bookmarkCnt;
+
     @Enumerated(EnumType.STRING)
     private Ages ages; //선호 연령
 

@@ -49,6 +49,14 @@ public class PostController {
      * @param postId 모집글 ID
      * @param userId 사용자 ID
      * @return 모집글 정보
+     * 모집글 목록 조회
+     */
+    @GetMapping("/{userId}")
+    public ApiResponse<?> getPostList(@PathVariable(value = "userId") long userId,
+                                      @RequestParam(value = "sort", defaultValue = "최신순") String creteria) {
+        PostListResponse postList = postService.getPostList(userId, creteria);
+        return ApiResponse.createSuccess(ResponseCode.SUCCESS, postList);
+    }
      */
     @GetMapping("/{postId}")
     public ApiResponse<?>  readPost(

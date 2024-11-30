@@ -16,4 +16,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findWithPessimisticLockById(Long postId);
 
     List<Post> findAllByOrderByCreateDateDesc();
+
+    List<Post> findAllByOrderByBookmarkCntDesc();
 }

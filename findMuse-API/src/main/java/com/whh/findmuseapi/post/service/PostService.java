@@ -57,6 +57,6 @@ public interface PostService {
     /**
      * 모집글 리스트를 가져옵니다.
      */
-    PostListResponse getPostList();
+    PostListResponse getPostList(long userId, String creteria);
 
 }
