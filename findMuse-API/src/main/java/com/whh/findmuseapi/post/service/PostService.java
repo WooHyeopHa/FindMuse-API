@@ -2,6 +2,7 @@ package com.whh.findmuseapi.post.service;
 
 import com.whh.findmuseapi.post.dto.request.PostCreateRequest;
 import com.whh.findmuseapi.post.dto.request.PostUpdateRequest;
+import com.whh.findmuseapi.post.dto.response.PostCreateResponse;
 import com.whh.findmuseapi.post.dto.response.PostListResponse;
 import com.whh.findmuseapi.post.dto.response.PostOneReadResponse;
 import com.whh.findmuseapi.post.entity.Post;
@@ -17,13 +18,10 @@ import com.whh.findmuseapi.user.entity.User;
 
 public interface PostService {
 
-
     /**
-     * 게시물 생성 로직입니다.
-     *
-     * @param createRequest 게시물 생성 정보
+     * 게시물 생성 로직
      */
-    void createPost(PostCreateRequest createRequest);
+    PostCreateResponse createPost(PostCreateRequest createRequest);
 
     /**
      * 게시물 단일 조회 로직입니다.

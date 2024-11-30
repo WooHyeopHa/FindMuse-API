@@ -28,5 +28,6 @@ public class PostTag {
     public PostTag(Post post, Tag tag) {
         this.post = post;
         this.tag = tag;
+        post.getTagList().add(this);
     }
 }

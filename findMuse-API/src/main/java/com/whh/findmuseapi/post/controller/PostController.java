@@ -35,15 +35,12 @@ public class PostController {
     private final PostService postService;
 
     /**
-     * 모집글 생성 엔드포인트
-     *
-     * @param createRequest 모집글 생성 요청 정보
-     * @return 생성된 모집글 정보
+     * 모집글 생성
      */
     @PostMapping
     public ApiResponse<?> createPost(@Valid @RequestBody PostCreateRequest createRequest) {
-        postService.createPost(createRequest);
-        return ApiResponse.createSuccessWithNoContent(ResponseCode.RESOURCE_CREATED);
+        PostCreateResponse response = postService.createPost(createRequest);
+        return ApiResponse.createSuccess(ResponseCode.RESOURCE_CREATED, response);
     }
 
     /**

@@ -46,15 +46,11 @@ public class PostServiceImpl implements PostService {
 
 
     /**
-     * 1. 회원 유효성 검증
-     * 2. 전시회 유효성 검증
-     * 3. 태그 유효성 검증
-     *
-     * @param createRequest 게시물 생성 정보
+     * 게시글 작성
      */
     @Override
     @Transactional
-    public void createPost(PostCreateRequest createRequest) {
+    public PostCreateResponse createPost(PostCreateRequest createRequest) {
         User user = userRepository.findById(createRequest.getUserId())
                 .orElseThrow(() -> new CNotFoundException("회원: " + createRequest.getUserId()));
         Art art = artRepository.findById(createRequest.getArtId())
@@ -66,12 +62,9 @@ public class PostServiceImpl implements PostService {
                 .toList();
 
         Post post = Post.toEntity(createRequest, art, user);
+        tagList.stream().map(tag -> PostTag.builder().post(post).tag(tag).build()).toList();
 
-        List<PostTag> postTagList = tagList.stream().map(tag -> PostTag.builder().post(post).tag(tag).build()).toList();
-
-        post.getTagList().addAll(postTagList);
-
-        postRepository.save(post);
+        return new PostCreateResponse(postRepository.save(post).getId());
     }
 
     /**
