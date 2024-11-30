@@ -65,10 +65,7 @@ public class PostController {
     }
 
     /**
-     * 모집글 수정 엔드포인트
-     *
-     * @param updateRequest 모집글 수정 요청 정보
-     * @return 수정된 모집글 정보
+     * 모집글 수정
      */
     @PutMapping
     public ApiResponse<?>  updatePost(@Valid @RequestBody PostUpdateRequest updateRequest) {

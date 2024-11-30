@@ -86,7 +86,7 @@ public class PostServiceImpl implements PostService {
     }
 
     /**
-     * {@inheritDoc}
+     * 모집글 수정
      */
     @Override
     @Transactional
@@ -96,6 +96,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(updateRequest.getPostId())
                 .orElseThrow(() -> new CNotFoundException("게시글: " + updateRequest.getPostId()));
 
+        //더블체크
         checkWriter(writer, post);
 
         Art art = artRepository.findById(updateRequest.getArtId())
@@ -106,12 +107,10 @@ public class PostServiceImpl implements PostService {
                         .orElseThrow(() -> new CNotFoundException("태그: " + tagName)))
                 .toList();
 
-        // 나중에 개선사항(아직은 태그의 수가 많지 않아서 부하가 딱히 없을 것으로 예상)
-        postTagRepository.deleteAllByPost(post);
-
-        List<PostTag> postTagList = tagList.stream().map(tag -> PostTag.builder().post(post).tag(tag).build()).toList();
-
-        post.updatePost(updateRequest, art, postTagList);
+        post.updatePost(updateRequest, art);
+        tagList.forEach(tag -> PostTag.builder()
+                        .post(post)
+                        .tag(tag).build());
     }
 
     /**

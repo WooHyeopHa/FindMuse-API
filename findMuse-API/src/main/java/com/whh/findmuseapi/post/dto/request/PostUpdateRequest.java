@@ -1,6 +1,7 @@
 package com.whh.findmuseapi.post.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.List;
@@ -17,11 +18,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class PostUpdateRequest {
-    @NotBlank(message = "아이디를 입력해 주세요.")
+    @NotNull(message = "사용자 ID를 입력해 주세요.")
     @PositiveOrZero
     private Long userId;
 
-    @NotBlank(message = "게시글 번호를 입력해 주세요.")
+    @NotNull(message = "게시글 번호를 입력해 주세요.")
     @PositiveOrZero
     private Long postId;
 
@@ -35,17 +36,17 @@ public class PostUpdateRequest {
     @NotBlank(message = "장소를 입력해 주세요.")
     private String place;
 
-    @NotBlank(message = "마감일을 입력해 주세요.")
+    @NotNull(message = "마감일을 입력해 주세요.")
     private LocalDate endDate;
     // 클라이언트에서 문자열로 보낼지 포맷에 맞춰서 보낼지 상의후 타입을 선택해야할 것 같음.
 
-    @NotBlank(message = "초대 인원을 입력해 주세요.")
+    @NotNull(message = "초대 인원을 입력해 주세요.")
     private int inviteCount;
 
     @NotBlank(message = "선호 연령을 입력해 주세요.")
     private String ages;
 
-    @NotBlank(message = "전시회를 입력해 주세요.")
+    @NotNull(message = "전시회를 입력해 주세요.")
     private Long artId;
 
     @NotBlank(message = "태그를 입력해 주세요.")
