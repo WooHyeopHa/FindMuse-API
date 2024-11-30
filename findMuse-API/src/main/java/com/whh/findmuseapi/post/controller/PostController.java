@@ -44,11 +44,6 @@ public class PostController {
     }
 
     /**
-     * 모집글 단일 조회 엔드포인트
-     *
-     * @param postId 모집글 ID
-     * @param userId 사용자 ID
-     * @return 모집글 정보
      * 모집글 목록 조회
      */
     @GetMapping("/{userId}")
@@ -57,6 +52,9 @@ public class PostController {
         PostListResponse postList = postService.getPostList(userId, creteria);
         return ApiResponse.createSuccess(ResponseCode.SUCCESS, postList);
     }
+
+    /**
+     * 모집글 단일 조회
      */
     @GetMapping("/{postId}")
     public ApiResponse<?>  readPost(

@@ -145,7 +145,6 @@ public class PostServiceImpl implements PostService {
      * 모집글 목록 조회
      */
     @Override
-    public void checkWriter(User user, Post post) {
     public PostListResponse getPostList(long userId, String creteria) {
         User findUser = userRepository.findById(userId).orElseThrow(() -> new CNotFoundException("회원: " + userId));
         Infos.SortType sortType = Infos.SortType.convertStringToSortType(creteria);
@@ -170,6 +169,7 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList()));
     }
 
+    private void checkWriter(User user, Post post) {
         if (!post.getUser().getId().equals(user.getId())) {
             throw new CUnAuthorizationException();
         }
