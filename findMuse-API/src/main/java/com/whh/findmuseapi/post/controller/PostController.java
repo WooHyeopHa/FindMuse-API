@@ -74,29 +74,12 @@ public class PostController {
     }
 
     /**
-     * 모집글 삭제 엔드포인트
-     *
-     * @param postId 모집글 ID
-     * @param userId 사용자 ID
-     * @return 삭제 결과
+     * 모집글 삭제
      */
     @DeleteMapping("/{postId}")
-    public ApiResponse<?>  deletePost(
-            @PathVariable Long postId,
-            @RequestParam Long userId) {
+    public ApiResponse<?>  deletePost(@PathVariable long postId,
+                                      @RequestParam long userId) {
         postService.deletePost(userId, postId);
         return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
     }
-
-    /**
-     * 모집글 목록 조회 엔드포인트
-     *
-     * @return 모집글 목록
-     */
-    @GetMapping("/list")
-    public ApiResponse<?>  getPostList() {
-        PostListResponse postList = postService.getPostList();
-        return ApiResponse.createSuccess(ResponseCode.SUCCESS, postList);
-    }
-
 }

@@ -54,10 +54,10 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Volunteer> volunteeredList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<PostTag> tagList = new ArrayList<>();
 
     public void viewCountPlusOne(){

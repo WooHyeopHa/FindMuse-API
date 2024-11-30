@@ -36,20 +36,9 @@ public interface PostService {
     void updatePost(PostUpdateRequest updateRequest);
 
     /**
-     * 회원 유효성 검사
-     * 게시물 유효성 검사
-     * 회원 글쓴이 검사
-     *
-     * @param userId 글쓴이 아이디
-     * @param postId 게시글 아이디
+     * 게시글 삭제
      */
-    void deletePost(Long userId, Long postId);
-
-    /**
-     * 회원이 모집글을 쓴 사람인지 체크합니다.
-
-     */
-    void checkWriter(User user, Post post);
+    void deletePost(long userId, long postId);
 
     /**
      * 모집글 리스트를 가져옵니다.

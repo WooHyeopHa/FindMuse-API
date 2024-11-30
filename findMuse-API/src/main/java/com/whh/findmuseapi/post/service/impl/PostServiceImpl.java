@@ -114,22 +114,16 @@ public class PostServiceImpl implements PostService {
     }
 
     /**
-     * {@inheritDoc}
+     * 게시글 삭제
      */
     @Override
     @Transactional
-    public void deletePost(Long userId, Long postId) {
+    public void deletePost(long userId, long postId) {
         User writer = userRepository.findById(userId).orElseThrow(() -> new CNotFoundException("회원: " + userId));
         Post post = postRepository.findById(postId).orElseThrow(() -> new CNotFoundException("게시글: " + postId));
 
+        //더블 체크
         checkWriter(writer, post);
-
-        List<Volunteer> volunteers = post.getVolunteeredList();
-        volunteerRepository.deleteAll(volunteers);
-
-        List<PostTag> tags = post.getTagList();
-        postTagRepository.deleteAll(tags);
-
         postRepository.delete(post);
     }
 
