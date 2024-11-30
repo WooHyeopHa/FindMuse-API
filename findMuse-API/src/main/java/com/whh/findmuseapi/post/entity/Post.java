@@ -46,7 +46,7 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private Ages ages; //선호 연령
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "art_id")
     private Art art;
 

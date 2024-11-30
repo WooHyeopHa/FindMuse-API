@@ -4,17 +4,7 @@ import com.whh.findmuseapi.post.dto.request.PostCreateRequest;
 import com.whh.findmuseapi.post.dto.request.PostUpdateRequest;
 import com.whh.findmuseapi.post.dto.response.PostCreateResponse;
 import com.whh.findmuseapi.post.dto.response.PostListResponse;
-import com.whh.findmuseapi.post.dto.response.PostOneReadResponse;
-import com.whh.findmuseapi.post.entity.Post;
-import com.whh.findmuseapi.user.entity.User;
-
-/**
- * class: PostService.
- * 게시글 관련 서비스 입니다.
- *
- * @author devminseo
- * @version 8/20/24
- */
+import com.whh.findmuseapi.post.dto.response.PostOneResponse;
 
 public interface PostService {
 
@@ -29,9 +19,7 @@ public interface PostService {
     PostOneResponse getPost(long postId, long userId);
 
     /**
-     * 게시물 수정 로직입니다.
-     *
-     * @param updateRequest 수정 사항
+     * 게시물 수정 로직
      */
     void updatePost(PostUpdateRequest updateRequest);
 

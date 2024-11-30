@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
-    Long countByPostIdAndStatusAndActiveStatus(Long postId, Infos.InvieteStatus status, boolean activeStatus);
+    Long countByPostAndStatusAndActiveStatus(Post post, Infos.InvieteStatus status);
 
     boolean existsByUserAndPost(User user, Post post);
 

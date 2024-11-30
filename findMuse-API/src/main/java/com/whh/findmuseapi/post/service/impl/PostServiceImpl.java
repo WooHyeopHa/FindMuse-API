@@ -25,23 +25,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * class: PostServiceImpl.
- *
- * @author devminseo
- * @version 8/20/24
- */
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ArtRepository artRepository;
     private final TagRepository tagRepository;
     private final VolunteerRepository volunteerRepository;
-    private final PostTagRepository postTagRepository;
-
+    private final BookmarkRepository bookmarkRepository;
 
     /**
      * 게시글 작성
@@ -160,20 +154,4 @@ public class PostServiceImpl implements PostService {
             throw new CUnAuthorizationException();
         }
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PostListResponse getPostList() {
-        List<Post> list = postRepository.findAllByOrderByCreateDateDesc();
-
-        List<PostListReadResponse> postList = list.stream()
-                .map(PostListReadResponse::toDto)
-                .collect(Collectors.toList());
-
-        return PostListResponse.toDto(postList);
-
-    }
-
 }
