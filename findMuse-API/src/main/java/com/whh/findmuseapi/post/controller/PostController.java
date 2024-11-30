@@ -4,8 +4,9 @@ import com.whh.findmuseapi.common.constant.ResponseCode;
 import com.whh.findmuseapi.common.util.ApiResponse;
 import com.whh.findmuseapi.post.dto.request.PostCreateRequest;
 import com.whh.findmuseapi.post.dto.request.PostUpdateRequest;
+import com.whh.findmuseapi.post.dto.response.PostCreateResponse;
 import com.whh.findmuseapi.post.dto.response.PostListResponse;
-import com.whh.findmuseapi.post.dto.response.PostOneReadResponse;
+import com.whh.findmuseapi.post.dto.response.PostOneResponse;
 import com.whh.findmuseapi.post.service.PostService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
@@ -57,10 +58,9 @@ public class PostController {
      * 모집글 단일 조회
      */
     @GetMapping("/{postId}")
-    public ApiResponse<?>  readPost(
-            @PathVariable Long postId,
-            @RequestParam Long userId) {
-        PostOneReadResponse postResponse = postService.readPost(postId, userId);
+    public ApiResponse<?> readPost(@PathVariable long postId,
+                                   @RequestParam(value = "userId") long userId) {
+        PostOneResponse postResponse = postService.getPost(postId, userId);
         return ApiResponse.createSuccess(ResponseCode.SUCCESS, postResponse);
     }
 

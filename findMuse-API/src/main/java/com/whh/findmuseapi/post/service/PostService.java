@@ -24,12 +24,9 @@ public interface PostService {
     PostCreateResponse createPost(PostCreateRequest createRequest);
 
     /**
-     * 게시물 단일 조회 로직입니다.
-     *
-     * @param postId 게시글 아이디
-     * @return 게시글
+     * 게시물 단일 조회 로직
      */
-    PostOneReadResponse readPost(Long postId, Long userId);
+    PostOneResponse getPost(long postId, long userId);
 
     /**
      * 게시물 수정 로직입니다.

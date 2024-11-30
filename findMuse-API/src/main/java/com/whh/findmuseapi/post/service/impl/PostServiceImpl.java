@@ -10,15 +10,9 @@ import com.whh.findmuseapi.post.dto.request.PostUpdateRequest;
 import com.whh.findmuseapi.post.dto.response.PostCreateResponse;
 import com.whh.findmuseapi.post.dto.response.PostListDetailResponse;
 import com.whh.findmuseapi.post.dto.response.PostListResponse;
-import com.whh.findmuseapi.post.dto.response.PostOneReadResponse;
-import com.whh.findmuseapi.post.entity.Post;
-import com.whh.findmuseapi.post.entity.PostTag;
-import com.whh.findmuseapi.post.entity.Tag;
-import com.whh.findmuseapi.post.entity.Volunteer;
-import com.whh.findmuseapi.post.repository.PostRepository;
-import com.whh.findmuseapi.post.repository.PostTagRepository;
-import com.whh.findmuseapi.post.repository.TagRepository;
-import com.whh.findmuseapi.post.repository.VolunteerRepository;
+import com.whh.findmuseapi.post.dto.response.PostOneResponse;
+import com.whh.findmuseapi.post.entity.*;
+import com.whh.findmuseapi.post.repository.*;
 import com.whh.findmuseapi.post.service.PostService;
 import com.whh.findmuseapi.user.entity.User;
 import com.whh.findmuseapi.user.repository.UserRepository;
@@ -72,9 +66,18 @@ public class PostServiceImpl implements PostService {
     }
 
     /**
-     * {@inheritDoc}
+     * 모집글 단건 조회
      */
     @Override
+    public PostOneResponse getPost(long postId, long userId) {
+        Post post = plusAndGetPost(postId);
+        boolean isWriter = userId == (post.getUser().getId());
+        log.info("[Post : {}] is Wriiten By {} ? : {}", postId, userId, isWriter);
+
+        int invitedCount = Math.toIntExact(volunteerRepository.countByPostAndStatusAndActiveStatus(post, Infos.InvieteStatus.ACCESS));
+        return PostOneResponse.toDto(post, invitedCount, isWriter);
+    }
+
     @Transactional(timeout = 5)
     public PostOneReadResponse readPost(Long postId, Long userId) {
         Post post = postRepository.findWithPessimisticLockById(postId).orElseThrow(() -> new CNotFoundException("모집글: " + postId));

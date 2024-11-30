@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.QueryHints;
 public interface PostRepository extends JpaRepository<Post, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout",value = "5000")})
-    Optional<Post> findWithPessimisticLockById(Long postId);
+    Optional<Post> findBypostId(Long postId);
 
     List<Post> findAllByOrderByCreateDateDesc();
 
