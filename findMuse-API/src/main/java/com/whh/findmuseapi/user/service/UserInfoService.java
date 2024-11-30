@@ -138,13 +138,13 @@ public class UserInfoService {
 //    @Description("행사 리뷰 조회")
 //    @Transactional(readOnly = true)
 //    public List<ReviewResponse> getMyReview(User user, String creteria) {
-//        Infos.ReviewSortType sortType = Infos.ReviewSortType.fromString(creteria);
+//        Infos.SortType sortType = Infos.SortType.fromString(creteria);
 //
 //        List<Object[]> reviews;
-//        if (sortType == Infos.ReviewSortType.LATEST) {
+//        if (sortType == Infos.SortType.LATEST) {
 //            reviews = reviewRepository.findAllByUserOrderByCreateDateDesc(user.getId());
 //        }
-////        else if (sortType == Infos.ReviewSortType.POPULAR) {
+////        else if (sortType == Infos.SortType.POPULAR) {
 ////            reviews = reviewRepository.findAllByUserOrderByLikeCountDesc(user.getId());
 ////        }
 //        else {

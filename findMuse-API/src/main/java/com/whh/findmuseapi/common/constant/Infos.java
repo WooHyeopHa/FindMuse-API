@@ -19,7 +19,7 @@ public class Infos {
             return Arrays.stream(Gender.values())
                     .filter(gender -> gender.description.equals(value))
                     .findFirst()
-                    .orElseThrow(() -> new CBadRequestException("Invalid ReviewSortType: " + value));
+                    .orElseThrow(() -> new CBadRequestException("Invalid SortType: " + value));
         }
     }
 
@@ -68,24 +68,24 @@ public class Infos {
             return Arrays.stream(Genre.values())
                     .filter(genre -> genre.description.equals(value))
                     .findFirst()
-                    .orElseThrow(() -> new CBadRequestException("Invalid ReviewSortType: " + value));
+                    .orElseThrow(() -> new CBadRequestException("Invalid SortType: " + value));
         }
 
     }
 
     @Getter
     @RequiredArgsConstructor
-    public enum ReviewSortType {
+    public enum SortType {
         LATEST("최신순"),
         POPULAR("인기순");
 
         private final String description;
 
-        public static ReviewSortType convertStringToSortType(String value) {
-            return Arrays.stream(ReviewSortType.values())
+        public static SortType convertStringToSortType(String value) {
+            return Arrays.stream(SortType.values())
                     .filter(sort -> sort.description.equals(value))
                     .findFirst()
-                    .orElseThrow(()-> new CBadRequestException("Invalid ReviewSortType: " + value));
+                    .orElseThrow(()-> new CBadRequestException("Invalid SortType: " + value));
         }
     }
 
