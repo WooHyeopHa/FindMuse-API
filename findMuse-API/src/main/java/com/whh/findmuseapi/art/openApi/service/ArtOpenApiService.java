@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.whh.findmuseapi.art.openApi.dto.ArtInfoResponse.*;
-import static com.whh.findmuseapi.common.constant.Infos.ArtType.*;
+import static com.whh.findmuseapi.common.constant.Infos.Genre.*;
 
 
 @RequiredArgsConstructor
@@ -46,7 +46,7 @@ public class ArtOpenApiService {
         api2Entity(artProperties.getClassic(), DANCE_CLASSIC);
     }
 
-    private void api2Entity(String category, Infos.ArtType type) {
+    private void api2Entity(String category, Infos.Genre type) {
         // 1.ID리스트 불러오기
         List<Db> idList = getIdList(category);
         // 2. 상세정보 불러오기
@@ -60,7 +60,7 @@ public class ArtOpenApiService {
     /**
      * 엔티티 저장
      */
-    private void saveArt(List<ArtInfoDetailResponse> artDetailList, List<PlaceInfoDetailResponse> placeDetailList, Infos.ArtType type) {
+    private void saveArt(List<ArtInfoDetailResponse> artDetailList, List<PlaceInfoDetailResponse> placeDetailList, Infos.Genre type) {
         for (int i = 0; i < artDetailList.size(); i++) {
             Art newArt = artDetailList.get(i).toEntity(type);
             placeDetailList.get(i).toEntity(newArt);

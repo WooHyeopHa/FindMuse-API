@@ -25,7 +25,7 @@ public class Art {
     private int randomId;
     private String title;
     @Enumerated(EnumType.STRING)
-    private ArtType artType;
+    private Genre genre;
     private String location;
     private String place;
     private String startDate;
@@ -59,10 +59,10 @@ public class Art {
     private List<ArtHistory> artHistories = new ArrayList<>();
 
     @Builder
-    public Art(String title, int randomId, ArtType artType, String place, String startDate, String endDate, String startTime,String age) {
+    public Art(String title, int randomId, Genre genre, String place, String startDate, String endDate, String startTime, String age) {
         this.title = title;
         this.randomId = randomId;
-        this.artType = artType;
+        this.genre = genre;
         this.place = place;
         this.startDate = startDate;
         this.endDate = endDate;

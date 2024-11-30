@@ -37,7 +37,7 @@ public class MapResponse {
                     .longitude(art.getLongitude())
                     .title(art.getTitle())
                     .artId(art.getId())
-                    .genre(art.getArtType().getInfo())
+                    .genre(art.getGenre().getDescription())
                     .poster(art.getPoster())
                     .startDate(art.getStartDate())
                     .endDate(art.getEndDate())

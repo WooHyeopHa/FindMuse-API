@@ -19,7 +19,7 @@ class ArtTumbnailResponse {
         return ArtTumbnailResponse.builder()
                 .title(art.getTitle())
                 .place(art.getPlace())
-                .genre(art.getArtType().getInfo())
+                .genre(art.getGenre().getDescription())
                 .poster(art.getPoster())
                 .startDate(art.getStartDate())
                 .endDate(art.getEndDate())

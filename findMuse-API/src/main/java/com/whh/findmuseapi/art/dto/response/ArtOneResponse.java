@@ -29,7 +29,7 @@ public class ArtOneResponse {
         return ArtOneResponse.builder()
                 .poster(art.getPoster())
                 .title(art.getTitle())
-                .genre(art.getArtType().getInfo())
+                .genre(art.getGenre().getDescription())
                 .age(art.getAge())
                 .place(art.getPlace())
                 .startDate(art.getStartDate())
