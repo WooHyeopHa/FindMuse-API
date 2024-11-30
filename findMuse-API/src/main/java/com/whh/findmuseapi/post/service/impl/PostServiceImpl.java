@@ -79,20 +79,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Transactional(timeout = 5)
-    public PostOneReadResponse readPost(Long postId, Long userId) {
-        Post post = postRepository.findWithPessimisticLockById(postId).orElseThrow(() -> new CNotFoundException("모집글: " + postId));
+    public Post plusAndGetPost(long postId) {
+        Post post = postRepository.findBypostId(postId).orElseThrow(() -> new CNotFoundException("모집글: " + postId));
         post.viewCountPlusOne();
-
-        boolean isWriter = userId.equals(post.getUser().getId());
-
-        //TODO
-        // 모집글 조회시 내가 신청 했는지 안했는지 정보는 모집 신청 버튼 클릭시 정보 전달 (isWriter를 통해 내가 작성한 글 판단) <- 따로 API
-        // 모집글 조회시 필요한 유저의 정보 전달
-
-        int invitedCount = Math.toIntExact(volunteerRepository.countByPostIdAndStatusAndActiveStatus(post.getId(), Infos.InvieteStatus.ACCESS,
-                false));
-
-        return PostOneReadResponse.toDto(post, invitedCount, isWriter);
+        return post;
     }
 
     /**
