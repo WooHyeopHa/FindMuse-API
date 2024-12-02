@@ -25,4 +25,18 @@ public class Bookmark {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    public Bookmark(Post post, User user) {
+        this.activeStatus = false;
+        setRelation(post, user);
+    }
+
+    private void setRelation(Post post, User user) {
+        this.post = post;
+        this.user = user;
+        user.getBookmarks().add(this);
+    }
+
+    public void changeStatus() {
+        this.activeStatus = !this.activeStatus;
+    }
 }

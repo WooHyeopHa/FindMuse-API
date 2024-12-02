@@ -46,6 +46,9 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private Ages ages; //선호 연령
 
+    @Version
+    private Long version;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "art_id")
     private Art art;
@@ -105,5 +108,13 @@ public class Post {
         this.user = user;
         this.art = art;
         user.getPosts().add(this);
+    }
+
+    public void plusBookmarkCnt() {
+        this.bookmarkCnt++;
+    }
+
+    public void minusBookmarkCnt() {
+        this.bookmarkCnt--;
     }
 }
