@@ -2,7 +2,9 @@ package com.whh.findmuseapi.post.service.impl;
 
 import com.whh.findmuseapi.art.entity.Art;
 import com.whh.findmuseapi.art.repository.ArtRepository;
+import com.whh.findmuseapi.common.annotation.Retry;
 import com.whh.findmuseapi.common.constant.Infos;
+import com.whh.findmuseapi.common.exception.CBadRequestException;
 import com.whh.findmuseapi.common.exception.CNotFoundException;
 import com.whh.findmuseapi.common.exception.CUnAuthorizationException;
 import com.whh.findmuseapi.post.dto.request.PostCreateRequest;
@@ -17,6 +19,7 @@ import com.whh.findmuseapi.post.service.PostService;
 import com.whh.findmuseapi.user.entity.User;
 import com.whh.findmuseapi.user.repository.UserRepository;
 
+import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,7 +77,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional(timeout = 5)
     public Post plusAndGetPost(long postId) {
-        Post post = postRepository.findBypostId(postId).orElseThrow(() -> new CNotFoundException("모집글: " + postId));
+        Post post = postRepository.findByIdWithLock(postId).orElseThrow(() -> new CNotFoundException("모집글: " + postId));
         post.viewCountPlusOne();
         return post;
     }
@@ -147,6 +150,36 @@ public class PostServiceImpl implements PostService {
                     return PostListDetailResponse.toDto(p, false);
                 })
                 .collect(Collectors.toList()));
+    }
+
+    /**
+     * 북마크 등록
+     */
+    @Retry
+    @Transactional
+    @Override
+    public void doBookmark(long userId, long postId) {
+        User findUser = userRepository.findById(userId).orElseThrow(() -> new CNotFoundException("회원: " + userId));
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> new CNotFoundException("게시글: " + postId));
+        Bookmark findBookmark = bookmarkRepository.findByPostAndUser(findPost, findUser)
+                .orElse(new Bookmark(findPost, findUser));
+        findBookmark.changeStatus();
+        bookmarkRepository.save(findBookmark);
+        findPost.plusBookmarkCnt();
+    }
+
+    /**
+     * 북마크 해제
+     */
+    @Retry
+    @Transactional
+    @Override
+    public void cancleBookmark(long userId, long postId) {
+        User findUser = userRepository.findById(userId).orElseThrow(() -> new CNotFoundException("회원: " + userId));
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> new CNotFoundException("게시글: " + postId));
+        Bookmark findBookmark = bookmarkRepository.findByPostAndUser(findPost, findUser).orElseThrow(() -> new CBadRequestException("잘못된 요청입니다."));
+        findBookmark.changeStatus();
+        findPost.minusBookmarkCnt();
     }
 
     private void checkWriter(User user, Post post) {

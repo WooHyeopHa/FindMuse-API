@@ -14,12 +14,12 @@ public interface PostService {
     PostCreateResponse createPost(PostCreateRequest createRequest);
 
     /**
-     * 게시물 단일 조회 로직
+     * 게시물 단일 조회
      */
     PostOneResponse getPost(long postId, long userId);
 
     /**
-     * 게시물 수정 로직
+     * 게시물 수정
      */
     void updatePost(PostUpdateRequest updateRequest);
 
@@ -29,8 +29,17 @@ public interface PostService {
     void deletePost(long userId, long postId);
 
     /**
-     * 모집글 리스트를 가져옵니다.
+     * 모집글 리스트 조회
      */
     PostListResponse getPostList(long userId, String creteria);
 
+    /**
+     * 북마크 등록
+     */
+    void doBookmark(long userId, long postId);
+
+    /**
+     * 북마크 해제
+     */
+    void cancleBookmark(long userId, long postId);
 }
