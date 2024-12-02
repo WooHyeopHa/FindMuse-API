@@ -5,8 +5,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.whh.findmuseapi.common.constant.ResponseCode;
+import com.whh.findmuseapi.common.exception.CAccessTokenException;
 import com.whh.findmuseapi.common.exception.CBadRequestException;
+import com.whh.findmuseapi.common.exception.CRefreshTokenException;
 import com.whh.findmuseapi.common.exception.CUnAuthorizationException;
+import com.whh.findmuseapi.jwt.dto.AccessTokenDto;
 import com.whh.findmuseapi.jwt.dto.RefreshTokenDto;
 import com.whh.findmuseapi.jwt.property.JwtProperties;
 import com.whh.findmuseapi.user.entity.User;
@@ -141,16 +144,29 @@ public class JwtService {
             .map(accessToken -> accessToken.replace(BEARER, ""));
     }
     
+    public boolean isTokenValidForAccessToken(String token) {
+        try {
+            JWT.require(Algorithm.HMAC512(jwtProperties.getSecretKey())).build().verify(token);
+            return true;
+        } catch (TokenExpiredException e) {
+            log.info("유효기간이 만료된 토큰입니다. {} {}", e.getMessage(), e.getExpiredOn());
+            throw new CAccessTokenException(ResponseCode.ACCESS_TOKEN_EXPIRED);
+        } catch (JWTVerificationException e) {
+            log.info("유효하지 않은 토큰입니다. {}", e.getMessage());
+            throw new CAccessTokenException(ResponseCode.ACCESS_TOKEN_EXPIRED);
+        }
+    }
+    
     public boolean isTokenValid(String token) {
         try {
             JWT.require(Algorithm.HMAC512(jwtProperties.getSecretKey())).build().verify(token);
             return true;
         } catch (TokenExpiredException e) {
             log.info("유효기간이 만료된 토큰입니다. {} {}", e.getMessage(), e.getExpiredOn());
-            throw new TokenExpiredException(e.getMessage(), e.getExpiredOn());
+            return false;
         } catch (JWTVerificationException e) {
             log.info("유효하지 않은 토큰입니다. {}", e.getMessage());
-            throw new CUnAuthorizationException(ResponseCode.TOKEN_INVALID);
+            return false;
         }
     }
 
@@ -195,5 +211,56 @@ public class JwtService {
         return RefreshTokenDto.builder()
             .refreshToken(refreshToken)
             .build();
+    }
+    
+    @Transactional
+    public AccessTokenDto reIssueAccessToken(RefreshTokenDto refreshTokenDto) {
+        log.info("리프레시 토큰 : " + refreshTokenDto.refreshToken());
+        User user = userRepository.findByRefreshToken(refreshTokenDto.refreshToken())
+            .orElseThrow(() -> new CBadRequestException("유저를 찾을 수 없습니다."));
+        
+        if (!isTokenValid(refreshTokenDto.refreshToken())) {
+            throw new CRefreshTokenException(ResponseCode.REFRESH_TOKEN_EXPIRED);
+        }
+        
+        String accessToken = createAccessToken(user.getEmail());
+        return AccessTokenDto.builder()
+            .accessToken(accessToken)
+            .build();
+    }
+    
+    private String createExpiredAccessToken(String email) {
+        Date pastTime = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000); // 24시간 전
+        return JWT.create()
+            .withSubject(ACCESS_TOKEN_SUBJECT)
+            .withExpiresAt(pastTime)
+            .withClaim(CLAIM_EMAIL, email)
+            .sign(Algorithm.HMAC512(jwtProperties.getSecretKey()));
+    }
+    
+    private String createExpiredRefreshToken() {
+        Date pastTime = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000); // 24시간 전
+        return JWT.create()
+            .withSubject(REFRESH_TOKEN_SUBJECT)
+            .withExpiresAt(pastTime)
+            .sign(Algorithm.HMAC512(jwtProperties.getSecretKey()));
+    }
+    
+    public String issueExpiredAccessToken() {
+        User user = userRepository.findByAccountId("test_user2")
+            .orElseThrow(() -> new CBadRequestException("테스트 유저를 찾을 수 없습니다."));
+        
+        return createExpiredAccessToken(user.getEmail());
+    }
+    
+    public String issueExpiredRefreshToken() {
+        User user = userRepository.findByAccountId("test_user2")
+            .orElseThrow(() -> new CBadRequestException("테스트 유저를 찾을 수 없습니다."));
+        
+        String expiredRefreshToken = createExpiredRefreshToken();
+        user.updateRefreshToken(expiredRefreshToken);
+        userRepository.saveAndFlush(user);
+        
+        return expiredRefreshToken;
     }
 }

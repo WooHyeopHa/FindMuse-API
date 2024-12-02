@@ -30,9 +30,9 @@ public class GlobalExceptionAdvice {
     }
     
     // 500 INTERNAL_SERVER_ERROR: 형식 분석 오류 처리
-    @ExceptionHandler(CTokenException.class)
+    @ExceptionHandler(CAccessTokenException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiResponse<?> handleParseException(CTokenException ex) {
+    public ApiResponse<?> handleParseException(CAccessTokenException ex) {
         ex.printStackTrace();
         return ApiResponse.createError(ResponseCode.PARSE_EXCEPTION, ex.getMessage());
     }

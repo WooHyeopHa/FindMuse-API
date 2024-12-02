@@ -34,6 +34,10 @@ public enum ResponseCode {
     
     INVALID_REQUEST‎(HttpStatus.FORBIDDEN, "요청에 대한 접근 권한이 존재하지 않습니다."),
     
+    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN_EXPIRED"),
+    
+    ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "ACCESS_TOKEN_EXPIRED"),
+    
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "요청 처리 중 서버에서 오류가 발생했습니다.");
     
     

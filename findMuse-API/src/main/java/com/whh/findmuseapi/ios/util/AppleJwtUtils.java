@@ -8,7 +8,7 @@ import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.whh.findmuseapi.common.constant.ResponseCode;
 import com.whh.findmuseapi.common.exception.CBadRequestException;
-import com.whh.findmuseapi.common.exception.CTokenException;
+import com.whh.findmuseapi.common.exception.CAccessTokenException;
 import com.whh.findmuseapi.ios.config.AppleProperties;
 import com.whh.findmuseapi.ios.dto.key.ApplePublicKey;
 import com.whh.findmuseapi.ios.dto.key.ApplePublicKeys;
@@ -58,7 +58,7 @@ public class AppleJwtUtils {
             
             return signedJWT;
         } catch (ParseException e) {
-            throw new CTokenException(ResponseCode.PARSE_EXCEPTION, "Token(id_token) : " + idToken);
+            throw new CAccessTokenException(ResponseCode.PARSE_EXCEPTION, "Token(id_token) : " + idToken);
         }
     }
     
@@ -84,9 +84,9 @@ public class AppleJwtUtils {
             
             return keyFactory.generatePublic(publicKeySpec);
         } catch (NoSuchAlgorithmException e) {
-            throw new CTokenException(ResponseCode.NO_SUCH_ALGORITHM, e.getMessage());
+            throw new CAccessTokenException(ResponseCode.NO_SUCH_ALGORITHM, e.getMessage());
         } catch (InvalidKeySpecException e) {
-            throw new CTokenException(ResponseCode.INVALID_KEY_SPEC, e.getMessage());
+            throw new CAccessTokenException(ResponseCode.INVALID_KEY_SPEC, e.getMessage());
         }
     }
     public ReadOnlyJWTClaimsSet getTokenClaims(SignedJWT signedJWT, PublicKey publicKey) {
@@ -94,14 +94,14 @@ public class AppleJwtUtils {
             JWSVerifier verifier = new RSASSAVerifier((RSAPublicKey) publicKey);
             
             if (!signedJWT.verify(verifier)) {
-                throw new CTokenException(ResponseCode.TOKEN_INVALID);
+                throw new CAccessTokenException(ResponseCode.TOKEN_INVALID);
             }
             
             return signedJWT.getJWTClaimsSet();
         } catch (ParseException e) {
-            throw new CTokenException(ResponseCode.PARSE_EXCEPTION, "Token : " + signedJWT.toString());
+            throw new CAccessTokenException(ResponseCode.PARSE_EXCEPTION, "Token : " + signedJWT.toString());
         } catch (JOSEException e) {
-            throw new CTokenException(ResponseCode.JOSE_EXCEPTION, e.getMessage());
+            throw new CAccessTokenException(ResponseCode.JOSE_EXCEPTION, e.getMessage());
         }
     }
 }

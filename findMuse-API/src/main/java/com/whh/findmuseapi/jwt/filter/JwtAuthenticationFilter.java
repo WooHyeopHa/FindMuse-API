@@ -1,5 +1,8 @@
 package com.whh.findmuseapi.jwt.filter;
 
+import com.whh.findmuseapi.common.constant.ResponseCode;
+import com.whh.findmuseapi.common.exception.CAccessTokenException;
+import com.whh.findmuseapi.common.exception.CUnAuthorizationException;
 import com.whh.findmuseapi.jwt.service.JwtService;
 import com.whh.findmuseapi.user.entity.User;
 import com.whh.findmuseapi.user.repository.UserRepository;
@@ -40,25 +43,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String accessToken = jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
+                .filter(jwtService::isTokenValidForAccessToken)
                 .orElse(null);
-
-        String refreshToken = jwtService.extractRefreshToken(request)
-            .filter(jwtService::isTokenValid)
-            .orElse(null);
-
+        
         // AceessToken이 유효하면, 인증 진행
         if (accessToken != null) {
             AuthenticateUser(request, response, filterChain);
             return;
         }
-
-        // RefreshToken이 유효하면, AccessToken 재발급
-        if (refreshToken != null) {
-            log.info("access token 재발급 진행 중...");
-            jwtService.reIssueAccessToken(response, refreshToken);
-        }
-
+        
         filterChain.doFilter(request, response);
     }
     

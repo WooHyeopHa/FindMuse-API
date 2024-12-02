@@ -40,7 +40,7 @@ public class SecurityConfig {
         
         AuthenticationEntryPoint unauthorizedEntryPoint =
             (request, response, authException) -> {
-                Utils.sendErrorResponse(response, HttpStatus.UNAUTHORIZED.value(), ResponseCode.UNAUTHORIZED_REQUEST‎);
+                Utils.sendErrorResponse(response, HttpStatus.UNAUTHORIZED.value(), ResponseCode.ACCESS_TOKEN_EXPIRED);
             };
         
         AccessDeniedHandler accessDeniedHandler =
@@ -75,6 +75,9 @@ public class SecurityConfig {
                     .requestMatchers(
                             "/auth/apple/token",
                             "/jwt/refresh-token",
+                            "/jwt/access-token",
+                            "/jwt/issue/expire-access",
+                            "/jwt/issue/expire-refresh",
                             "/auth/apple/test",
                             "/swagger-ui/**",
                             "/v3/api-docs/**",
