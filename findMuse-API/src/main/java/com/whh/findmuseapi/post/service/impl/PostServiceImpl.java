@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
         boolean isWriter = userId == (post.getUser().getId());
         log.info("[Post : {}] is Wriiten By {} ? : {}", postId, userId, isWriter);
 
-        int invitedCount = Math.toIntExact(volunteerRepository.countByPostAndStatusAndActiveStatus(post, Infos.InvieteStatus.ACCESS));
+        int invitedCount = Math.toIntExact(volunteerRepository.countByPostAndStatus(post, Infos.InvieteStatus.ACCESS));
         return PostOneResponse.toDto(post, invitedCount, isWriter);
     }
 
