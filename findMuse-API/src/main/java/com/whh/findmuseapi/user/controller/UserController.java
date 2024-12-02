@@ -53,7 +53,7 @@ public class UserController {
         UserProfile.InformationRequest informationRequest = objectMapper.readValue(userProfileInformationRequestJson, UserProfile.InformationRequest.class);
 
         userService.registerProfileInformation(user, informationRequest, profileImage);
-        log.info("사용자 정보 설정 완료 : {}, {}, {}", user.getBirthYear(), user.getGender().getInfo(), user.getProfileImageUrl());
+        log.info("사용자 정보 설정 완료 : {}, {}, {}", user.getBirthYear(), user.getGender().getDescription(), user.getProfileImageUrl());
         return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
     }
 
