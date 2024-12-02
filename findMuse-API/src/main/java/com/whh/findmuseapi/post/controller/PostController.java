@@ -11,14 +11,7 @@ import com.whh.findmuseapi.post.service.PostService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,7 +53,7 @@ public class PostController {
      * 모집글 수정
      */
     @PutMapping
-    public ApiResponse<?>  updatePost(@Valid @RequestBody PostUpdateRequest updateRequest) {
+    public ApiResponse<?> updatePost(@Valid @RequestBody PostUpdateRequest updateRequest) {
         postService.updatePost(updateRequest);
         return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
     }
@@ -69,9 +62,27 @@ public class PostController {
      * 모집글 삭제
      */
     @DeleteMapping("/{postId}")
-    public ApiResponse<?>  deletePost(@PathVariable long postId,
+    public ApiResponse<?> deletePost(@PathVariable long postId,
                                       @RequestParam long userId) {
         postService.deletePost(userId, postId);
+        return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
+    }
+
+    /**
+     * 북마크 등록
+     */
+    @PostMapping("/bookmark")
+    public ApiResponse<?> bookmarkPost(@RequestParam long postId, @RequestParam long userId) {
+        postService.doBookmark(userId, postId);
+        return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
+    }
+
+    /**
+     * 북마크 해제
+     */
+    @PatchMapping("/bookmark/cancle")
+    public ApiResponse<?> cancleBookmarkPost(@RequestParam long postId, @RequestParam long userId) {
+        postService.cancleBookmark(userId, postId);
         return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
     }
 }
