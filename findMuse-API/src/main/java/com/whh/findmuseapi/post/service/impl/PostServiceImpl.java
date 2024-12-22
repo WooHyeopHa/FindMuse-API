@@ -2,59 +2,50 @@ package com.whh.findmuseapi.post.service.impl;
 
 import com.whh.findmuseapi.art.entity.Art;
 import com.whh.findmuseapi.art.repository.ArtRepository;
+import com.whh.findmuseapi.common.annotation.Retry;
 import com.whh.findmuseapi.common.constant.Infos;
+import com.whh.findmuseapi.common.exception.CBadRequestException;
 import com.whh.findmuseapi.common.exception.CNotFoundException;
 import com.whh.findmuseapi.common.exception.CUnAuthorizationException;
 import com.whh.findmuseapi.post.dto.request.PostCreateRequest;
 import com.whh.findmuseapi.post.dto.request.PostUpdateRequest;
-import com.whh.findmuseapi.post.dto.response.PostListReadResponse;
+import com.whh.findmuseapi.post.dto.response.PostCreateResponse;
+import com.whh.findmuseapi.post.dto.response.PostListDetailResponse;
 import com.whh.findmuseapi.post.dto.response.PostListResponse;
-import com.whh.findmuseapi.post.dto.response.PostOneReadResponse;
-import com.whh.findmuseapi.post.entity.Post;
-import com.whh.findmuseapi.post.entity.PostTag;
-import com.whh.findmuseapi.post.entity.Tag;
-import com.whh.findmuseapi.post.entity.Volunteer;
-import com.whh.findmuseapi.post.repository.PostRepository;
-import com.whh.findmuseapi.post.repository.PostTagRepository;
-import com.whh.findmuseapi.post.repository.TagRepository;
-import com.whh.findmuseapi.post.repository.VolunteerRepository;
+import com.whh.findmuseapi.post.dto.response.PostOneResponse;
+import com.whh.findmuseapi.post.entity.*;
+import com.whh.findmuseapi.post.repository.*;
 import com.whh.findmuseapi.post.service.PostService;
 import com.whh.findmuseapi.user.entity.User;
 import com.whh.findmuseapi.user.repository.UserRepository;
+
+import java.awt.print.Book;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * class: PostServiceImpl.
- *
- * @author devminseo
- * @version 8/20/24
- */
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ArtRepository artRepository;
     private final TagRepository tagRepository;
     private final VolunteerRepository volunteerRepository;
-    private final PostTagRepository postTagRepository;
-
+    private final BookmarkRepository bookmarkRepository;
 
     /**
-     * 1. 회원 유효성 검증
-     * 2. 전시회 유효성 검증
-     * 3. 태그 유효성 검증
-     *
-     * @param createRequest 게시물 생성 정보
+     * 게시글 작성
      */
     @Override
     @Transactional
-    public void createPost(PostCreateRequest createRequest) {
+    public PostCreateResponse createPost(PostCreateRequest createRequest) {
         User user = userRepository.findById(createRequest.getUserId())
                 .orElseThrow(() -> new CNotFoundException("회원: " + createRequest.getUserId()));
         Art art = artRepository.findById(createRequest.getArtId())
@@ -66,37 +57,33 @@ public class PostServiceImpl implements PostService {
                 .toList();
 
         Post post = Post.toEntity(createRequest, art, user);
+        tagList.stream().map(tag -> PostTag.builder().post(post).tag(tag).build()).toList();
 
-        List<PostTag> postTagList = tagList.stream().map(tag -> PostTag.builder().post(post).tag(tag).build()).toList();
-
-        post.getTagList().addAll(postTagList);
-
-        postRepository.save(post);
+        return new PostCreateResponse(postRepository.save(post).getId());
     }
 
     /**
-     * {@inheritDoc}
+     * 모집글 단건 조회
      */
     @Override
+    public PostOneResponse getPost(long postId, long userId) {
+        Post post = plusAndGetPost(postId);
+        boolean isWriter = userId == (post.getUser().getId());
+        log.info("[Post : {}] is Wriiten By {} ? : {}", postId, userId, isWriter);
+
+        int invitedCount = Math.toIntExact(volunteerRepository.countByPostAndStatus(post, Infos.InvieteStatus.ACCESS));
+        return PostOneResponse.toDto(post, invitedCount, isWriter);
+    }
+
     @Transactional(timeout = 5)
-    public PostOneReadResponse readPost(Long postId, Long userId) {
-        Post post = postRepository.findWithPessimisticLockById(postId).orElseThrow(() -> new CNotFoundException("모집글: " + postId));
+    public Post plusAndGetPost(long postId) {
+        Post post = postRepository.findByIdWithLock(postId).orElseThrow(() -> new CNotFoundException("모집글: " + postId));
         post.viewCountPlusOne();
-
-        boolean isWriter = userId.equals(post.getUser().getId());
-
-        //TODO
-        // 모집글 조회시 내가 신청 했는지 안했는지 정보는 모집 신청 버튼 클릭시 정보 전달 (isWriter를 통해 내가 작성한 글 판단) <- 따로 API
-        // 모집글 조회시 필요한 유저의 정보 전달
-
-        int invitedCount = Math.toIntExact(volunteerRepository.countByPostIdAndStatusAndActiveStatus(post.getId(), Infos.InvieteStatus.ACCESS,
-                false));
-
-        return PostOneReadResponse.toDto(post, invitedCount, isWriter);
+        return post;
     }
 
     /**
-     * {@inheritDoc}
+     * 모집글 수정
      */
     @Override
     @Transactional
@@ -106,6 +93,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(updateRequest.getPostId())
                 .orElseThrow(() -> new CNotFoundException("게시글: " + updateRequest.getPostId()));
 
+        //더블체크
         checkWriter(writer, post);
 
         Art art = artRepository.findById(updateRequest.getArtId())
@@ -116,55 +104,87 @@ public class PostServiceImpl implements PostService {
                         .orElseThrow(() -> new CNotFoundException("태그: " + tagName)))
                 .toList();
 
-        // 나중에 개선사항(아직은 태그의 수가 많지 않아서 부하가 딱히 없을 것으로 예상)
-        postTagRepository.deleteAllByPost(post);
-
-        List<PostTag> postTagList = tagList.stream().map(tag -> PostTag.builder().post(post).tag(tag).build()).toList();
-
-        post.updatePost(updateRequest, art, postTagList);
+        post.updatePost(updateRequest, art);
+        tagList.forEach(tag -> PostTag.builder()
+                        .post(post)
+                        .tag(tag).build());
     }
 
     /**
-     * {@inheritDoc}
+     * 게시글 삭제
      */
     @Override
     @Transactional
-    public void deletePost(Long userId, Long postId) {
+    public void deletePost(long userId, long postId) {
         User writer = userRepository.findById(userId).orElseThrow(() -> new CNotFoundException("회원: " + userId));
         Post post = postRepository.findById(postId).orElseThrow(() -> new CNotFoundException("게시글: " + postId));
 
+        //더블 체크
         checkWriter(writer, post);
-
-        List<Volunteer> volunteers = post.getVolunteeredList();
-        volunteerRepository.deleteAll(volunteers);
-
-        List<PostTag> tags = post.getTagList();
-        postTagRepository.deleteAll(tags);
-
         postRepository.delete(post);
     }
 
+    /**
+     * 모집글 목록 조회
+     */
+    @Override
+    public PostListResponse getPostList(long userId, String creteria) {
+        User findUser = userRepository.findById(userId).orElseThrow(() -> new CNotFoundException("회원: " + userId));
+        Infos.SortType sortType = Infos.SortType.convertStringToSortType(creteria);
+
+        List<Post> postList = new ArrayList<>();
+        if (sortType.equals(Infos.SortType.LATEST)) {
+            postList = postRepository.findAllByOrderByCreateDateDesc();
+        }
+        else if(sortType.equals(Infos.SortType.POPULAR)){
+            postList = postRepository.findAllByOrderByBookmarkCntDesc();
+        }
+
+        List<Bookmark> bookmarkByMe = bookmarkRepository.findAllByUser(findUser);
+        return PostListResponse.toDto(postList.stream()
+                .map(p -> {
+                    if (bookmarkByMe.stream()
+                            .anyMatch(b -> b.getPost().equals(p))) {
+                        return PostListDetailResponse.toDto(p, true);
+                    }
+                    return PostListDetailResponse.toDto(p, false);
+                })
+                .collect(Collectors.toList()));
+    }
+
+    /**
+     * 북마크 등록
+     */
+    @Retry
     @Transactional
     @Override
-    public void checkWriter(User user, Post post) {
+    public void doBookmark(long userId, long postId) {
+        User findUser = userRepository.findById(userId).orElseThrow(() -> new CNotFoundException("회원: " + userId));
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> new CNotFoundException("게시글: " + postId));
+        Bookmark findBookmark = bookmarkRepository.findByPostAndUser(findPost, findUser)
+                .orElse(new Bookmark(findPost, findUser));
+        findBookmark.changeStatus();
+        bookmarkRepository.save(findBookmark);
+        findPost.plusBookmarkCnt();
+    }
+
+    /**
+     * 북마크 해제
+     */
+    @Retry
+    @Transactional
+    @Override
+    public void cancleBookmark(long userId, long postId) {
+        User findUser = userRepository.findById(userId).orElseThrow(() -> new CNotFoundException("회원: " + userId));
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> new CNotFoundException("게시글: " + postId));
+        Bookmark findBookmark = bookmarkRepository.findByPostAndUser(findPost, findUser).orElseThrow(() -> new CBadRequestException("잘못된 요청입니다."));
+        findBookmark.changeStatus();
+        findPost.minusBookmarkCnt();
+    }
+
+    private void checkWriter(User user, Post post) {
         if (!post.getUser().getId().equals(user.getId())) {
             throw new CUnAuthorizationException();
         }
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PostListResponse getPostList() {
-        List<Post> list = postRepository.findAllByOrderByCreateDateDesc();
-
-        List<PostListReadResponse> postList = list.stream()
-                .map(PostListReadResponse::toDto)
-                .collect(Collectors.toList());
-
-        return PostListResponse.toDto(postList);
-
-    }
-
 }

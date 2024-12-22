@@ -7,7 +7,8 @@ import com.whh.findmuseapi.art.entity.ArtLike;
 import com.whh.findmuseapi.art.repository.ArtHistoryRepository;
 import com.whh.findmuseapi.art.repository.ArtLikeRepository;
 import com.whh.findmuseapi.art.repository.ArtRepository;
-import com.whh.findmuseapi.common.constant.Infos.ArtType;
+import com.whh.findmuseapi.common.constant.Infos;
+import com.whh.findmuseapi.common.constant.Infos.Genre;
 import com.whh.findmuseapi.common.exception.CBadRequestException;
 import com.whh.findmuseapi.common.exception.CInternalServerException;
 import com.whh.findmuseapi.common.exception.CNotFoundException;
@@ -67,13 +68,13 @@ public class ArtServiceImpl implements ArtService{
         if (genre == null) {
             throw new CBadRequestException("잘못된 요청입니다. 장르를 입력해주세요");
         }
-        List<ArtType> artTypes = genre.stream().map(ArtType::convert).toList();
+        List<Genre> genres = genre.stream().map(Infos.Genre::convertStringToGenre).toList();
         userRepository.findById(userId).orElseThrow(() -> new CNotFoundException(userId + "은(는) 존재하지 않는 회원입니다."));
 
         if (sort.equals("최신순")) {
-            return ArtListResponse.toDto(artRepository.findArtByCondition(userId, date, artTypes));
+            return ArtListResponse.toDto(artRepository.findArtByCondition(userId, date, genres));
         }
-        return ArtListResponse.toDto(artRepository.findArtByConditionRank(userId, date, artTypes));
+        return ArtListResponse.toDto(artRepository.findArtByConditionRank(userId, date, genres));
     }
 
     /**
@@ -110,8 +111,8 @@ public class ArtServiceImpl implements ArtService{
         else {
             // 취향 정보가 있는 경우
             user.getTasteList().forEach(t -> {
-                ArtType artType = ArtType.convert(t.getTaste().getName());
-                randArtList.addAll(ArtRandomResponse.toDto(artRepository.findArtByGenre(artType)));
+                Infos.Genre genre = Infos.Genre.convertStringToGenre(t.getTaste().getName());
+                randArtList.addAll(ArtRandomResponse.toDto(artRepository.findArtByGenre(genre)));
             });
         }
         return randArtList;

@@ -9,9 +9,6 @@ import com.whh.findmuseapi.art.repository.ArtHistoryRepository;
 import com.whh.findmuseapi.art.repository.ArtLikeRepository;
 import com.whh.findmuseapi.art.repository.ArtRepository;
 import com.whh.findmuseapi.common.constant.Infos;
-import com.whh.findmuseapi.review.dto.ReviewResponse;
-import com.whh.findmuseapi.review.entity.ArtReview;
-import com.whh.findmuseapi.review.entity.ArtReviewLike;
 import com.whh.findmuseapi.review.repository.ReviewRepository;
 import com.whh.findmuseapi.user.dto.response.MyInfo;
 import com.whh.findmuseapi.user.dto.response.TasteGroupResponse;
@@ -69,12 +66,12 @@ public class UserInfoService {
 
         if (artTypeInfo != null && !artTypeInfo.isEmpty()) {
             try {
-                Infos.ArtType artType = Infos.ArtType.convert(artTypeInfo);
+                Infos.Genre genre = Infos.Genre.convertStringToGenre(artTypeInfo);
                 arts = arts.stream()
-                        .filter(art -> art.getArtType() == artType)
+                        .filter(art -> art.getGenre() == genre)
                         .toList();
             } catch (RuntimeException e) {
-                throw new IllegalArgumentException("유효하지 않은 ArtType 정보입니다.");
+                throw new IllegalArgumentException("유효하지 않은 Genre 정보입니다.");
             }
         }
 
@@ -112,12 +109,12 @@ public class UserInfoService {
 
         if (artTypeInfo != null && !artTypeInfo.isEmpty()) {
             try {
-                Infos.ArtType artType = Infos.ArtType.convert(artTypeInfo);
+                Infos.Genre genre = Infos.Genre.convertStringToGenre(artTypeInfo);
                 artHistories = artHistories.stream()
-                        .filter(artHistory -> artHistory.getArt().getArtType() == artType)
+                        .filter(artHistory -> artHistory.getArt().getGenre() == genre)
                         .toList();
             } catch (RuntimeException e) {
-                throw new IllegalArgumentException("유효하지 않은 ArtType 정보입니다.");
+                throw new IllegalArgumentException("유효하지 않은 Genre 정보입니다.");
             }
         }
 
@@ -141,13 +138,13 @@ public class UserInfoService {
 //    @Description("행사 리뷰 조회")
 //    @Transactional(readOnly = true)
 //    public List<ReviewResponse> getMyReview(User user, String creteria) {
-//        Infos.ReviewSortType sortType = Infos.ReviewSortType.fromString(creteria);
+//        Infos.SortType sortType = Infos.SortType.fromString(creteria);
 //
 //        List<Object[]> reviews;
-//        if (sortType == Infos.ReviewSortType.LATEST) {
+//        if (sortType == Infos.SortType.LATEST) {
 //            reviews = reviewRepository.findAllByUserOrderByCreateDateDesc(user.getId());
 //        }
-////        else if (sortType == Infos.ReviewSortType.POPULAR) {
+////        else if (sortType == Infos.SortType.POPULAR) {
 ////            reviews = reviewRepository.findAllByUserOrderByLikeCountDesc(user.getId());
 ////        }
 //        else {

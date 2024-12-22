@@ -132,7 +132,7 @@ public class UserService {
         userRepository.save(user);
 
         log.info("사용자 닉네임 : {}, 위치 : {}, 생년 : {}, 성별 : {}, 한줄소개 : {}, 활동내역 공개 여부 : {}, 프로필 이미지 Url : {}",
-                user.getNickname(), user.getLocation(), user.getBirthYear(), user.getGender().getInfo(), user.getComment(), user.isShowStatus(), user.getProfileImageUrl());
+                user.getNickname(), user.getLocation(), user.getBirthYear(), user.getGender().getDescription(), user.getComment(), user.isShowStatus(), user.getProfileImageUrl());
     }
 
     private Integer validateBirthYear(String integer) {

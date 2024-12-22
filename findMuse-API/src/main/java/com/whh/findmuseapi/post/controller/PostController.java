@@ -4,28 +4,14 @@ import com.whh.findmuseapi.common.constant.ResponseCode;
 import com.whh.findmuseapi.common.util.ApiResponse;
 import com.whh.findmuseapi.post.dto.request.PostCreateRequest;
 import com.whh.findmuseapi.post.dto.request.PostUpdateRequest;
+import com.whh.findmuseapi.post.dto.response.PostCreateResponse;
 import com.whh.findmuseapi.post.dto.response.PostListResponse;
-import com.whh.findmuseapi.post.dto.response.PostOneReadResponse;
+import com.whh.findmuseapi.post.dto.response.PostOneResponse;
 import com.whh.findmuseapi.post.service.PostService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-/**
- * class: PostController.
- * 게시판 CRUD 컨트롤러 입니다.
- *
- * @author devminseo
- * @version 8/20/24
- */
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,68 +21,68 @@ public class PostController {
     private final PostService postService;
 
     /**
-     * 모집글 생성 엔드포인트
-     *
-     * @param createRequest 모집글 생성 요청 정보
-     * @return 생성된 모집글 정보
+     * 모집글 생성
      */
     @PostMapping
     public ApiResponse<?> createPost(@Valid @RequestBody PostCreateRequest createRequest) {
-        postService.createPost(createRequest);
-        return ApiResponse.createSuccessWithNoContent(ResponseCode.RESOURCE_CREATED);
+        PostCreateResponse response = postService.createPost(createRequest);
+        return ApiResponse.createSuccess(ResponseCode.RESOURCE_CREATED, response);
     }
 
     /**
-     * 모집글 단일 조회 엔드포인트
-     *
-     * @param postId 모집글 ID
-     * @param userId 사용자 ID
-     * @return 모집글 정보
+     * 모집글 목록 조회
+     */
+    @GetMapping("/{userId}")
+    public ApiResponse<?> getPostList(@PathVariable(value = "userId") long userId,
+                                      @RequestParam(value = "sort", defaultValue = "최신순") String creteria) {
+        PostListResponse postList = postService.getPostList(userId, creteria);
+        return ApiResponse.createSuccess(ResponseCode.SUCCESS, postList);
+    }
+
+    /**
+     * 모집글 단일 조회
      */
     @GetMapping("/{postId}")
-    public ApiResponse<?>  readPost(
-            @PathVariable Long postId,
-            @RequestParam Long userId) {
-        PostOneReadResponse postResponse = postService.readPost(postId, userId);
+    public ApiResponse<?> readPost(@PathVariable long postId,
+                                   @RequestParam(value = "userId") long userId) {
+        PostOneResponse postResponse = postService.getPost(postId, userId);
         return ApiResponse.createSuccess(ResponseCode.SUCCESS, postResponse);
     }
 
     /**
-     * 모집글 수정 엔드포인트
-     *
-     * @param updateRequest 모집글 수정 요청 정보
-     * @return 수정된 모집글 정보
+     * 모집글 수정
      */
     @PutMapping
-    public ApiResponse<?>  updatePost(@Valid @RequestBody PostUpdateRequest updateRequest) {
+    public ApiResponse<?> updatePost(@Valid @RequestBody PostUpdateRequest updateRequest) {
         postService.updatePost(updateRequest);
         return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
     }
 
     /**
-     * 모집글 삭제 엔드포인트
-     *
-     * @param postId 모집글 ID
-     * @param userId 사용자 ID
-     * @return 삭제 결과
+     * 모집글 삭제
      */
     @DeleteMapping("/{postId}")
-    public ApiResponse<?>  deletePost(
-            @PathVariable Long postId,
-            @RequestParam Long userId) {
+    public ApiResponse<?> deletePost(@PathVariable long postId,
+                                      @RequestParam long userId) {
         postService.deletePost(userId, postId);
         return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
     }
 
     /**
-     * 모집글 목록 조회 엔드포인트
-     *
-     * @return 모집글 목록
+     * 북마크 등록
      */
-    @GetMapping("/list")
-    public ApiResponse<?>  getPostList() {
-        PostListResponse postList = postService.getPostList();
-        return ApiResponse.createSuccess(ResponseCode.SUCCESS, postList);
+    @PostMapping("/bookmark")
+    public ApiResponse<?> bookmarkPost(@RequestParam long postId, @RequestParam long userId) {
+        postService.doBookmark(userId, postId);
+        return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
     }
 
+    /**
+     * 북마크 해제
+     */
+    @PatchMapping("/bookmark/cancle")
+    public ApiResponse<?> cancleBookmarkPost(@RequestParam long postId, @RequestParam long userId) {
+        postService.cancleBookmark(userId, postId);
+        return ApiResponse.createSuccessWithNoContent(ResponseCode.SUCCESS);
+    }
 }

@@ -41,10 +41,15 @@ public class Post {
     private int inviteCount;
     @NotNull
     private int viewCount;
+    private int bookmarkCnt;
+
     @Enumerated(EnumType.STRING)
     private Ages ages; //선호 연령
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @Version
+    private Long version;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "art_id")
     private Art art;
 
@@ -52,17 +57,17 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Volunteer> volunteeredList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<PostTag> tagList = new ArrayList<>();
 
     public void viewCountPlusOne(){
         this.viewCount = Math.addExact(1, this.viewCount);
     }
 
-    public void updatePost(PostUpdateRequest updateRequest,Art newArt,List<PostTag> postTagList) {
+    public void updatePost(PostUpdateRequest updateRequest,Art newArt) {
         this.title = updateRequest.getTitle();
         this.content = updateRequest.getContent();
         this.place = updateRequest.getPlace();
@@ -70,25 +75,24 @@ public class Post {
         this.inviteCount = updateRequest.getInviteCount();
         this.ages = Infos.Ages.valueOf(updateRequest.getAges());
         this.art = newArt;
-        this.tagList = postTagList;
+        this.getTagList().clear();
     }
 
     public static Post toEntity(PostCreateRequest createRequest,Art art,User user) {
-        return Post.builder()
+        Post newPost = Post.builder()
                 .title(createRequest.getTitle())
                 .content(createRequest.getContent())
                 .place(createRequest.getPlace())
                 .endDate(createRequest.getEndDate())
                 .inviteCount(createRequest.getInviteCount())
-                .ages(Infos.Ages.valueOf(createRequest.getAges()))
-                .art(art)
-                .user(user)
+                .ages(Ages.valueOf(createRequest.getAges()))
                 .build();
+        newPost.setRelation(user, art);
+        return newPost;
     }
 
     @Builder
-    public Post(String title, String content, String place, LocalDate endDate, int inviteCount, Ages ages, Art art,
-                User user) {
+    private Post(String title, String content, String place, LocalDate endDate, int inviteCount, Ages ages) {
         this.title = title;
         this.content = content;
         this.place = place;
@@ -96,10 +100,21 @@ public class Post {
         this.endDate = endDate;
         this.inviteCount = inviteCount;
         this.viewCount = 0;
+        this.bookmarkCnt = 0;
         this.ages = ages;
-        this.art = art;
+    }
+
+    private void setRelation(User user, Art art) {
         this.user = user;
-        this.volunteeredList = Collections.emptyList();
-        this.tagList = Collections.emptyList();
+        this.art = art;
+        user.getPosts().add(this);
+    }
+
+    public void plusBookmarkCnt() {
+        this.bookmarkCnt++;
+    }
+
+    public void minusBookmarkCnt() {
+        this.bookmarkCnt--;
     }
 }

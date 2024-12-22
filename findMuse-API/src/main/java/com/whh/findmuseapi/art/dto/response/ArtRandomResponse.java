@@ -18,7 +18,7 @@ public class ArtRandomResponse {
         return artList.stream()
                 .map(a -> ArtRandomResponse.builder()
                             .artId(a.getId())
-                            .genre(a.getArtType().getInfo())
+                            .genre(a.getGenre().getDescription())
                             .poster(a.getPoster()).build()).toList();
     }
 }
