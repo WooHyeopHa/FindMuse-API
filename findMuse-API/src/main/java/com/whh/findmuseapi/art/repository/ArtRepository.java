@@ -11,10 +11,10 @@ import java.util.List;
 @Repository
 public interface ArtRepository extends JpaRepository<Art, Long> {
 
-    @Query("select a from Art a left outer join a.artLikes al on al.user.id = :userId where a.startDate <= :date and a.artType in (:types) order by a.startDate desc")
+    @Query("select a from Art a left outer join a.artLikes al on al.user.id = :userId where a.startDate <= :date and a.genre in (:types) order by a.startDate desc")
     List<Art> findArtByCondition(Long userId, String date, List<Genre> types);
 
-    @Query("select a from Art a left outer join a.artLikes al on al.user.id = :userId where a.startDate <= :date and a.artType in (:types) order by a.star desc")
+    @Query("select a from Art a left outer join a.artLikes al on al.user.id = :userId where a.startDate <= :date and a.genre in (:types) order by a.star desc")
     List<Art> findArtByConditionRank(Long userId, String date, List<Genre> types);
 
 //    @Query(value = "select a from Art a left outer join a.artLikes al on al.user.id = :userId where a.artType = :type order by a.viewCnt, a.star desc limit 50")
