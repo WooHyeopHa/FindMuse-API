@@ -76,6 +76,7 @@ public class SecurityConfig {
                             "/auth/apple/token",
                             "/jwt/refresh-token",
                             "/jwt/access-token",
+                            "/swagger-docs/**",
                             "/jwt/issue/expire-access",
                             "/jwt/issue/expire-refresh",
                             "/auth/apple/test",

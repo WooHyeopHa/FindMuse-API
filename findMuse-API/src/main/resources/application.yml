@@ -59,3 +59,7 @@ art:
   dance: ${ART_DANCE}
   dance-basic: ${ART_DANCE_BASIC}
   classic: ${ART_CLASSIC}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-docs
